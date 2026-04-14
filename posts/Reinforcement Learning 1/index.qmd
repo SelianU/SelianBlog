@@ -173,4 +173,4 @@ $$
 
 - $v_*(s)$ can be obtained directly from $q_*(s,a)$
 - $q_*(s,a)$ cannot be obtained directly from $v_*(s)$
-    - Instead, we need to know the transition probability $p(s'|s,a)$$ under model-based settings.
+    - Instead, we need to know the transition probability $p(s'|s,a)$ under model-based settings.
