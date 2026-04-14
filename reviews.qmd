@@ -2,7 +2,11 @@
 title: "Reviews"
 listing:
   contents: reviews
-  type: default
+  feed: true
   sort: "date desc"
+  type: default
   categories: true
+  sort-ui: true
+  filter-ui: true
+page-layout: full
 ---
