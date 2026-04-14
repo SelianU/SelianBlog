@@ -209,7 +209,7 @@
 <li><img src="https://latex.codecogs.com/png.latex?v_*(s)"> can be obtained directly from <img src="https://latex.codecogs.com/png.latex?q_*(s,a)"></li>
 <li><img src="https://latex.codecogs.com/png.latex?q_*(s,a)"> cannot be obtained directly from <img src="https://latex.codecogs.com/png.latex?v_*(s)">
 <ul>
-<li>Instead, we need to know the transition probability <img src="https://latex.codecogs.com/png.latex?p(s'%7Cs,a)">$ under model-based settings.</li>
+<li>Instead, we need to know the transition probability <img src="https://latex.codecogs.com/png.latex?p(s'%7Cs,a)"> under model-based settings.</li>
 </ul></li>
 </ul>
 
