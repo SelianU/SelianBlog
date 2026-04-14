@@ -2,7 +2,19 @@
   {
     "listing": "/index.html",
     "items": [
-      "/posts/post-with-code/index.html"
+      "/posts/Clare/index.html"
+    ]
+  },
+  {
+    "listing": "/post.html",
+    "items": [
+      "/posts/Clare/index.html"
+    ]
+  },
+  {
+    "listing": "/reviews.html",
+    "items": [
+      "/reviews/Clare/index.html"
     ]
   }
 ]
