@@ -45,7 +45,7 @@
 <h2 class="anchored" data-anchor-id="introduction-소개">Introduction 소개</h2>
 <p>IRL의 주요 목표는 시연으로부터 보상 함수를 학습하는 것이다. 일반적으로, 기존의 IRL 방법은 (비용이 많이 들거나 완전히 알려진 전이 모델을 요구하는) 광범위한 온라인 시행착오에 의존하며, 많은 실제 응용 분야에서 확장하는 데 어려움을 겪는다. 이 문제를 해결하기 위해, 본 논문은 온라인 상호작용 없이 이전에 수집된 데이터셋으로부터 학습하는 데 초점을 맞춘 오프라인 IRL을 연구한다. 오프라인 IRL은 수동으로 적절한 보상을 식별하기는 어렵지만 인간 시연의 과거 데이터셋을 쉽게 사용할 수 있는 안전에 민감한 응용 분야(예: 헬스케어, 자율 주행, 로보틱스 등)에서 엄청난 잠재력을 가진다. 특히, 학습된 보상 함수는 전문가의 의도를 간결하게 표현하기 때문에 정책 학습(예: 오프라인 모방 학습(IL))뿐만 아니라 더 넓은 범위의 응용 분야(예: 과업 설명 및 전이 학습)에도 유용하다. 본 연구는 오프라인 IRL의 주요 난제, 즉 보상 외삽 오류를 해결하는 것을 목표로 하며, 이는 학습된 보상 함수가 과업을 올바르게 설명하지 못하고 보지 못한 환경에서 에이전트를 잘못 이끌 수 있는 문제이다. 이 문제는 제한된 전문가 시연(expert demonstrations)에서 상태의 부분적인 커버리지(즉, 공변량 변화)와 보상에 대한 고차원적이고 표현력이 풍부한 함수 근사로 인해 발생한다. 이는 감독을 위한 강화 신호가 없고 내재된 보상의 모호성 때문에 더욱 악화된다. 사실, 가치 함수에서의 외삽 오류와 관련된 유사한 문제들은 오프라인 (순방향) RL에서 널리 관찰되어 왔다. 불행히도, 우리가 아는 한, 최근 일부 진전에도 불구하고 이 문제는 오프라인 IRL에서 아직 잘 이해되지 않고 있다. 따라서 본 논문이 답하고자 하는 핵심 질문은 “보상 외삽 오류를 효과적으로 개선할 수 있는 오프라인 IRL 알고리즘을 어떻게 고안할 것인가?”이다.</p>
 <p>우리는 이 질문에 대해, 공변량 변화에 대응하기 위해 상태-행동 공간의 커버리지를 강화하고자 (제한된) 고품질 전문가 데이터뿐만 아니라 (풍부할 수 있는) 저품질의 다양한 데이터를 활용하는, 원칙에 기반한 IRL 알고리즘인 CLARE(conservative model-based reward learning)를 소개한다. CLARE는 분포를 벗어난 상태(out-of-distribution)에서의 잘못된 유도를 완화하기 위해 학습된 보상에 보수성을 적절히 통합하고, 학습된 동역학 모델을 활용하여 보상 일반화 능력을 향상시킴으로써 위에서 언급한 문제를 해결한다. 더 구체적으로, CLARE는 보수적인 보상 업데이트와 안전한 정책 개선을 반복하며, 보상 함수는 가중치가 부여된 전문가 및 다양한 상태-행동에 대한 가치를 높이는 동시에 모델 롤아웃(model rollouts)으로부터 생성된 것들에는 신중하게 페널티를 부여하는 방식으로 업데이트된다. 그 결과, 이 방법은 전문가의 의도를 담아내면서도 분포를 벗어난 상태-행동을 보수적으로 평가할 수 있으며, 이는 결과적으로 정책이 데이터로 뒷받침되는 상태를 방문하고 전문가의 행동을 따르도록 장려하여 안전한 정책 탐색을 달성하게 한다.</p>
-<p>기술적으로, CLARE가 섬세하게 조정해야 하는 매우 간단하지 않은 two-tier tradeoffs가 있다: 전문가 데이터와 다양한 데이터의 ’균형 잡힌 활용’과 추정된 모델의 ’탐색’이다. ![[CLARE_Figure1.png]] 그림 1에 나타난 바와 같이, 첫 번째 트레이드오프는 CLARE가 보상을 추론하기 위해 전문가 시연을 활용하는 것과, 제한된 시연 데이터의 불충분한 상태-행동 커버리지로 인해 발생하는 공변량 변화를 처리하기 위해 다양한 데이터를 활용하는 것 모두에 의존하기 때문에 발생한다. 더 높은 수준에서, CLARE는 더 나은 일반화를 위해 오프라인 데이터 매니폴드(manifold)에서 벗어나고자 추정된 모델을 신중하게 탐색해야 한다. 이를 위해, 우리는 먼저 미묘한 이중적 활용-탐색 트레이드오프를 포착하기 위해 오프라인 데이터 포인트(상태-행동 쌍)에 대한 새로운 점별 가중치 매개변수(pointwise weight parameters)를 도입한다. 그 다음, 우리는 학습된 정책과 전문가 정책 간의 수익 격차에 대한 상한을 제공함으로써 성능에 미치는 영향을 엄밀하게 정량화한다. 이론적 정량화에 기초하여, 우리는 CLARE가 수익 격차를 최소화하기 위해 적절하게 균형을 맞출 수 있는 최적의 가중치 매개변수를 도출한다. 우리 연구는 CLARE를 통해 얻은 보상 함수가 전문가의 의도를 효과적으로 포착하고 오프라인 IRL에서 외삽 오류를 이론적으로 개선할 수 있음을 보여준다.</p>
+<p>기술적으로, CLARE가 섬세하게 조정해야 하는 매우 간단하지 않은 two-tier tradeoffs가 있다: 전문가 데이터와 다양한 데이터의 ’균형 잡힌 활용’과 추정된 모델의 ’탐색’이다. <img src="https://selianu.github.io/SelianBlog/posts/post-with-code/CLARE_Figure1.png" class="img-fluid"> 그림 1에 나타난 바와 같이, 첫 번째 트레이드오프는 CLARE가 보상을 추론하기 위해 전문가 시연을 활용하는 것과, 제한된 시연 데이터의 불충분한 상태-행동 커버리지로 인해 발생하는 공변량 변화를 처리하기 위해 다양한 데이터를 활용하는 것 모두에 의존하기 때문에 발생한다. 더 높은 수준에서, CLARE는 더 나은 일반화를 위해 오프라인 데이터 매니폴드(manifold)에서 벗어나고자 추정된 모델을 신중하게 탐색해야 한다. 이를 위해, 우리는 먼저 미묘한 이중적 활용-탐색 트레이드오프를 포착하기 위해 오프라인 데이터 포인트(상태-행동 쌍)에 대한 새로운 점별 가중치 매개변수(pointwise weight parameters)를 도입한다. 그 다음, 우리는 학습된 정책과 전문가 정책 간의 수익 격차에 대한 상한을 제공함으로써 성능에 미치는 영향을 엄밀하게 정량화한다. 이론적 정량화에 기초하여, 우리는 CLARE가 수익 격차를 최소화하기 위해 적절하게 균형을 맞출 수 있는 최적의 가중치 매개변수를 도출한다. 우리 연구는 CLARE를 통해 얻은 보상 함수가 전문가의 의도를 효과적으로 포착하고 오프라인 IRL에서 외삽 오류를 이론적으로 개선할 수 있음을 보여준다.</p>
 <p>마지막으로, MuJoCo 연속 제어 과업에서 CLARE를 최첨단 오프라인 IRL 및 오프라인 IL 알고리즘과 비교하기 위해 광범위한 실험을 수행한다. 우리 결과는 작은 오프라인 데이터셋을 활용하더라도, CLARE가 연속적이고 고차원적인 환경에서 기존 알고리즘에 비해 상당한 성능 향상을 얻는다는 것을 보여준다. 우리는 또한 학습된 보상 함수가 전문가의 행동을 잘 설명할 수 있으며 추가 학습에 매우 유용하다는 것을 보여준다. ### 해설 강화 학습과 지도 학습 모두 올바른 정책 함수를 찾는 방법이다. 지도 학습은 전문가의 (상태,행동) 데이터를 보고 정책 함수를 모방한다. 반면 강화 학습은 주어진 보상 함수를 최대로 만드는 과정에서 정책 함수를 발견하게 된다. 둘을 학습하는 데 필요한 데이터가 다르다. 지도학습은 (상태, 행동) 데이터셋을 받아서 어떤 입력이 들어왔을 때 어떤 정책 함수를 사용해야 출력값이 나오는지를 찾는 과정이다. 그런데 강화학습은 (입력, 출력) 데이터셋을 주는 게 아니라 환경과 보상 함수를 입력받아서 적절한 정책함수를 찾는다. 여기서 보상 함수는 원래 개발자가 임의로 설정했는데, 실제 환경은 보상이 딱 떨어지지 않으니 전문가 등의 행동으로 적절한 보상함수를 추론하는 과정을 추가했다. 이게 바로 역강화학습이다.</p>
 <section id="reward-extrapolation-error-보상-외삽-오류" class="level4">
 <h4 class="anchored" data-anchor-id="reward-extrapolation-error-보상-외삽-오류">Reward Extrapolation Error 보상 외삽 오류</h4>
@@ -101,9 +101,9 @@
 <h2 class="anchored" data-anchor-id="experiments">Experiments</h2>
 <p>다음으로, 우리는 실험적 연구를 통해 CLARE를 평가하고 다음과 같은 핵심 질문에 답하고자 한다: (1) CLARE는 기존의 최첨단 알고리즘과 비교하여 표준 오프라인 RL 벤치마크에서 어떻게 수행되는가? (2) CLARE는 다양한 데이터셋 크기에서 어떻게 수행되는가? (3) “보수성 수준”인 <img src="https://latex.codecogs.com/png.latex?u">는 성능에 어떤 영향을 미치는가? (4) CLARE는 얼마나 빨리 수렴하는가? (5) 학습된 보상 함수는 전문가의 의도를 효과적으로 설명할 수 있는가?</p>
 <p>이 질문들에 답하기 위해, 우리는 D4RL 벤치마크(Fu et al., 2020)에서 CLARE를 다음과 같은 기존 오프라인 IRL 방법들과 비교합니다: 1) IQ-LEARN (Garg et al., 2021), 최첨단 모델-프리 오프라인 IRL 알고리즘; 2) AVRIL (Chan &amp; van der Schaar, 2021), 또 다른 최신 모델-프리 오프라인 IRL 방법; 3) EDM (Jarrett et al., 2020), 최첨단 오프라인 IL 접근 방식; 및 4) 행동 복제(BC). 모델 기반 오프라인 순방향 RL(MORL) 방법과 IRL을 단순 결합한 순진한 접근 방식의 낮은 성능을 입증하기 위해, 우리는 또한 MaxEnt IRL의 내부 루프에서 COMBO(Yu et al., 2021)를 직접 사용하는 MOMAX라는 기준 알고리즘을 고려한다. 우리는 세 가지 데이터 품질(무작위, 중간, 전문가)로 구성된 연속 제어 작업(Half-Cheetah, Walker2d, Hopper, Ant 포함)에 대한 결과를 제시한다. 실험 설정 및 하이퍼파라미터는 부록 A에 자세히 설명되어 있다.</p>
-<p>![[CLARE_Figure2.png]] 그림 2: 전문가 데이터와 중간 데이터를 동일하게 포함하는 다양한 데이터셋 크기에 걸쳐 모든 작업에서 다른 알고리즘과 비교한 CLARE.</p>
-<p>![[CLARE_Table1.png]] 표 1: D4RL 데이터셋에 대한 결과. 각 작업에 대해 실험은 세 가지 다른 데이터 조합으로 수행되었다: 1) 10k 전문가 튜플, 2) 5k 전문가 및 5k 중간 튜플, 및 3) 5k 전문가 및 5k 무작위 튜플. 아래의 1), 2), 3)에 대한 데이터 점수는 각각 전문가, 중간, 무작위 데이터에 해당한다. 우리는 공개적으로 사용 가능한 소스 코드를 기반으로 IQ-LEARN, EDM 및 AVRIL을 조정한다. 결과는 7개의 무작위 시드에 대해 평균을 낸 값이다. 모든 알고리즘 중 가장 높은 점수는 굵게 표시된다.</p>
-<p>![[CLARE_Figure3.png]] 그림 3: CLARE의 성능. 1) <img src="https://latex.codecogs.com/png.latex?u">의 영향: 그림 3(a)는 10k 전문가 튜플을 사용하여 사용자가 선택한 매개변수 <img src="https://latex.codecogs.com/png.latex?u">가 성능에 미치는 영향을 보여준다. 2) 수렴 속도: 그림 3(c)와 3(b)는 10k 전문가 및 10k 중간 튜플을 사용한 CLARE의 수렴을 보여준다. 각 반복에서 CLARE는 SAC를 사용하여 액터 및 크리틱 네트워크에 대해 총 10k 그래디언트 업데이트(에포크당 20 그래디언트 단계로 총 500 에포크)를 통해 정책 개선을 수행한다. 3) 복원된 보상: 그림 3(d)는 기본 보상을 CLARE에서 학습한 보상으로 대체하여 SAC를 훈련한 결과를 보여준다.</p>
+<p><img src="https://selianu.github.io/SelianBlog/posts/post-with-code/CLARE_Figure2.png" class="img-fluid"> 그림 2: 전문가 데이터와 중간 데이터를 동일하게 포함하는 다양한 데이터셋 크기에 걸쳐 모든 작업에서 다른 알고리즘과 비교한 CLARE.</p>
+<p><img src="https://selianu.github.io/SelianBlog/posts/post-with-code/CLARE_Table1.png" class="img-fluid"> 표 1: D4RL 데이터셋에 대한 결과. 각 작업에 대해 실험은 세 가지 다른 데이터 조합으로 수행되었다: 1) 10k 전문가 튜플, 2) 5k 전문가 및 5k 중간 튜플, 및 3) 5k 전문가 및 5k 무작위 튜플. 아래의 1), 2), 3)에 대한 데이터 점수는 각각 전문가, 중간, 무작위 데이터에 해당한다. 우리는 공개적으로 사용 가능한 소스 코드를 기반으로 IQ-LEARN, EDM 및 AVRIL을 조정한다. 결과는 7개의 무작위 시드에 대해 평균을 낸 값이다. 모든 알고리즘 중 가장 높은 점수는 굵게 표시된다.</p>
+<p><img src="https://selianu.github.io/SelianBlog/posts/post-with-code/CLARE_Figure3.png" class="img-fluid"> 그림 3: CLARE의 성능. 1) <img src="https://latex.codecogs.com/png.latex?u">의 영향: 그림 3(a)는 10k 전문가 튜플을 사용하여 사용자가 선택한 매개변수 <img src="https://latex.codecogs.com/png.latex?u">가 성능에 미치는 영향을 보여준다. 2) 수렴 속도: 그림 3(c)와 3(b)는 10k 전문가 및 10k 중간 튜플을 사용한 CLARE의 수렴을 보여준다. 각 반복에서 CLARE는 SAC를 사용하여 액터 및 크리틱 네트워크에 대해 총 10k 그래디언트 업데이트(에포크당 20 그래디언트 단계로 총 500 에포크)를 통해 정책 개선을 수행한다. 3) 복원된 보상: 그림 3(d)는 기본 보상을 CLARE에서 학습한 보상으로 대체하여 SAC를 훈련한 결과를 보여준다.</p>
 <p><strong>MuJoCo 제어에 대한 결과.</strong> 첫 번째 질문에 답하고 학습된 보상의 효과를 검증하기 위해, 우리는 D4RL 데이터셋에서 샘플링된 제한된 상태-행동 튜플을 사용하여 다른 작업에서 CLARE를 평가한다. Exp. &amp; Rand., Exp. &amp; Med. 및 Exp. 결과의 표준 편차 범위는 각각 156.4-280.5, 15.7-127.8 및 42.4-89.5이다. 표 6에서 볼 수 있듯이, CLARE는 거의 모든 데이터셋에서, 특히 낮은 품질의 데이터에서 상당한 차이로 최고의 성능을 보인다. 이는 CLARE에 의해 학습된 보상 함수가 다양한 데이터에서 유용한 지식을 활용하면서 오프라인 정책 탐색을 효과적으로 안내할 수 있음을 보여준다.</p>
 <p><strong>다양한 데이터셋 크기에서의 결과.</strong> 두 번째 질문에 답하기 위해, 우리는 상태-행동 튜플의 총 수를 2k에서 100k까지 변화시키고 그림 2에서 다른 작업에 대한 결과를 제시한다. CLARE는 충분한 데이터가 있는 각 작업에서 전문가 수준의 성능에 도달한다. 매우 제한된 데이터에도 불구하고 CLARE는 기존 알고리즘에 비해 강력한 성능을 달성하여 뛰어난 샘플 효율성을 보여준다.</p>
 <p><strong>다양한 <img src="https://latex.codecogs.com/png.latex?u"> 값에서의 결과.</strong> 세 번째 질문에 답하기 위해, 우리는 불확실성 측정치를 [0,1]로 정규화하고 u를 0.1에서 1.0까지 변화시킨다. 식 (11)에 따라, 더 작은 <img src="https://latex.codecogs.com/png.latex?u">는 더 보수적인 CLARE에 해당한다. 그림 3(a)에서 볼 수 있듯이, <img src="https://latex.codecogs.com/png.latex?u"> 값이 감소함에 따라 성능이 향상된다. 이는 외삽 오류를 완화하는 데 내재된 보수성의 중요성을 검증한다. 우리는 경험적으로 <img src="https://latex.codecogs.com/png.latex?u">에 대한 성능이 다른 작업에서 다양하다는 것을 발견했다. 따라서, 실제로는 이를 조정할 하이퍼파라미터로 취급한다.</p>
@@ -129,27 +129,6 @@
   <guid>https://selianu.github.io/SelianBlog/posts/post-with-code/</guid>
   <pubDate>Tue, 14 Apr 2026 00:00:00 GMT</pubDate>
   <media:content url="https://selianu.github.io/SelianBlog/posts/post-with-code/image.jpg" medium="image" type="image/jpeg"/>
-</item>
-<item>
-  <title>Welcome To My Blog</title>
-  <dc:creator>Tristan O&#39;Malley</dc:creator>
-  <link>https://selianu.github.io/SelianBlog/posts/welcome/</link>
-  <description><![CDATA[ 
-
-
-
-
-
-<p>This is the first post in a Quarto blog. Welcome!</p>
-<p><img src="https://selianu.github.io/SelianBlog/posts/welcome/thumbnail.jpg" class="img-fluid"></p>
-<p>Since this post doesn’t specify an explicit <code>image</code>, the first image in the post will be used in the listing page of posts.</p>
-
-
-
- ]]></description>
-  <category>news</category>
-  <guid>https://selianu.github.io/SelianBlog/posts/welcome/</guid>
-  <pubDate>Sat, 11 Apr 2026 00:00:00 GMT</pubDate>
 </item>
 </channel>
 </rss>
