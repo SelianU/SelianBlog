@@ -8,7 +8,7 @@ description: "Introduction, MDP, Bellman Equation"
 ---
 
 ## Introduction
-RL Applications
+**RL Applications**
 
 - Robotics & Autonomous Driving
 - Game AI
@@ -24,7 +24,7 @@ State($S_t$), Action($A_t$), Environment, Reward($R_{t+1}$)
 ## Markov Decision Process
 
 ### Grid World
-- Deterministic grid world `vs` Stochastic grid world
+- **Deterministic** grid world `vs` **Stochastic** grid world
 
 ### Markov Property
 Stochastic Process
@@ -35,6 +35,7 @@ Stochastic Process
     - $S_{t+1}=s'$ does not depend on past states.
 
 Markov Process $(S,P)$
+
 - $S$: A finite set of states.
 - $P$: A state transition probability matrix $[P_{ij}]$, $P_{ij}=P(s_j|s_i) = P(S_{t+1}=s_j|S_t=s_i)$
     - Sum of row = 1
