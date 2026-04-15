@@ -22,7 +22,7 @@
 
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
-<p>RL Applications</p>
+<p><strong>RL Applications</strong></p>
 <ul>
 <li>Robotics &amp; Autonomous Driving</li>
 <li>Game AI</li>
@@ -41,7 +41,7 @@
 <section id="grid-world" class="level3">
 <h3 class="anchored" data-anchor-id="grid-world">Grid World</h3>
 <ul>
-<li>Deterministic grid world <code>vs</code> Stochastic grid world</li>
+<li><strong>Deterministic</strong> grid world <code>vs</code> <strong>Stochastic</strong> grid world</li>
 </ul>
 </section>
 <section id="markov-property" class="level3">
@@ -55,7 +55,14 @@
 <li><img src="https://latex.codecogs.com/png.latex?S_%7Bt+1%7D=s'"> does not depend on past states.</li>
 </ul></li>
 </ul>
-<p>Markov Process <img src="https://latex.codecogs.com/png.latex?(S,P)"> - <img src="https://latex.codecogs.com/png.latex?S">: A finite set of states. - <img src="https://latex.codecogs.com/png.latex?P">: A state transition probability matrix <img src="https://latex.codecogs.com/png.latex?%5BP_%7Bij%7D%5D">, <img src="https://latex.codecogs.com/png.latex?P_%7Bij%7D=P(s_j%7Cs_i)%20=%20P(S_%7Bt+1%7D=s_j%7CS_t=s_i)"> - Sum of row = 1</p>
+<p>Markov Process <img src="https://latex.codecogs.com/png.latex?(S,P)"></p>
+<ul>
+<li><img src="https://latex.codecogs.com/png.latex?S">: A finite set of states.</li>
+<li><img src="https://latex.codecogs.com/png.latex?P">: A state transition probability matrix <img src="https://latex.codecogs.com/png.latex?%5BP_%7Bij%7D%5D">, <img src="https://latex.codecogs.com/png.latex?P_%7Bij%7D=P(s_j%7Cs_i)%20=%20P(S_%7Bt+1%7D=s_j%7CS_t=s_i)">
+<ul>
+<li>Sum of row = 1</li>
+</ul></li>
+</ul>
 </section>
 <section id="markov-decision-process-1" class="level3">
 <h3 class="anchored" data-anchor-id="markov-decision-process-1">Markov Decision Process</h3>
