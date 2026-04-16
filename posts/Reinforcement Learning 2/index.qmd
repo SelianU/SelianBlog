@@ -2,9 +2,9 @@
 title: "Reinforcement Learning 2"
 author: "Selian"
 date: "2026-04-14"
-categories: []
+categories: [RL]
 image: ""
-description: "한 줄 요약"
+description: "Dynamic Programming, Reinforcement Learning"
 filters:
   - leovan/pseudocode
 ---
