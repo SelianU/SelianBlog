@@ -1,0 +1,212 @@
+---
+title: "Reinforcement Learning 2"
+author: "Selian"
+date: "2026-04-14"
+categories: []
+image: ""
+description: "한 줄 요약"
+filters:
+  - leovan/pseudocode
+---
+
+## Dynamic Programming
+
+Method for solving Markov Decision Processes (MDPs)
+
+- DP assumes
+	- Model-based
+	- The Markov property
+
+<!-- -->
+
+ - DP uses the Bellman equation to iteratively update value functions.
+
+<!-- -->
+
+- Goal
+	- Compute the optimal value function
+	- Derive the optimal policy
+
+<!-- -->
+
+Two main approach
+
+- **Value-based approach**
+	- Directly update value functions
+	- Leads to **Value Iteration**
+
+- **Policy-based approach**
+	- Evaluate and improve policies
+	- Leads to **Policy Iteration**
+
+### Value Iteration
+**Bellman Optimality Equation**
+$$v_*(s) = \max\limits_a\sum\limits_{s',r}p(s',r|s,a)[r+\gamma v_*(s')]$$
+
+#### Value Iteration Procedure
+$$V_{k+1}(s)\leftarrow\max\limits_a\sum\limits_{s',r} p(s',r|s,a)[r+\gamma V_k(s')]$$
+
+**Initialize $\rightarrow$ Update $\rightarrow$ Compute the Optimal Policy**
+
+Disadvantages
+1. Policy often converges long before the values converge: values rarely changes
+2. Slow: $O(S^2A)$ per iteration and needs many iterations to converge.
+
+Convergence
+- $\epsilon: \lvert V_{k+1}(s) - V_{k}(s) \rvert < \epsilon$ for all $s$
+
+#### Value Iteration Pseudo Code
+
+```{pseudocode}
+#| label: alg-value-iteration
+#| alg-title: "Value Iteration for estimating $\\pi \\approx \\pi_*$"
+\begin{algorithmic}
+\item \textbf{Hyperparameter:} small threshold $\epsilon > 0$ for the convergence check
+\item Initialize $V(s)$ arbitrarily for all $s \in \mathcal{S}$, except $V(\text{terminal}) = 0$
+
+\Repeat
+	\State $\Delta \gets 0$
+	\For{each $s \in \mathcal{S}$}
+		\State $v \gets V(s)$
+		\State $V(s) \gets \max_{a} \sum_{s', r} p(s', r \mid s, a) [r + \gamma V(s')]$
+		\State $\Delta \gets \max(\Delta, |v - V(s)|)$ 
+	\EndFor
+\Until{$\Delta < \epsilon$} 
+
+\State \textbf{Output} a deterministic policy $\pi \approx \pi_*$ such that
+\State $\pi(s) = \arg\max_{a} \sum_{s', r} p(s', r \mid s, a) [r + \gamma V(s')]$
+\end{algorithmic}
+```
+
+### Policy Iteration
+
+#### Policy Iteration Procedure
+1. **Policy Evaluation**
+	- Compute $V^\pi$ from the deterministic policy $\pi$
+	- $$V_{k+1}(s)\leftarrow\sum\limits_{s',r} p(s',r|s,\pi(s)) [r+\gamma V_k(s')]$$
+	1. Initialize $V_0(s)=0$ for all states $s$.
+	2. Update $V_{k+1}(s)$ from all $V_k(s')$ (full backup) $\rightarrow$ until convergence to $V^\pi(s)$
+2. **Policy Improvement**
+	- Improve policy $\pi$ to $\pi'$ using a greedy policy based on $V^\pi$
+	- $$\pi'(s) = \arg\max\limits_a\sum\limits_{s',r} p(s',r|s,a) [r+\gamma V^\pi(s')] = \arg\max\limits_a Q^\pi(s,a)$$
+
+#### Value vs Policy Iteration
+- In Value Iteration, $\pi_*$ is computed at the end using $V^*$.
+- In Policy Iteration, improvement is done at every step.
+
+**Comparison to Value Iteration**
+- Fewer iterations are needed to reach the optimal policy.
+- Faster convergence because the value update is based on a fixed policy.
+
+<!-- -->
+
+- Since $Q^\pi(s,\pi'(s))\ge V^\pi(s) = \sum\limits_a\pi(a|s) Q^\pi(s,a)$, always either
+	1. $\pi'$ is strictly better than $\pi$, or
+	2. $\pi'$ is optimal when $\pi=\pi'$
+
+$\Rightarrow$ Policy Improvement Theorem
+
+#### Policy Improvement
+
+::: {.callout-important title="Policy Improvement Theorem"}
+Let $\pi$ and $\pi'$ be two policies.
+
+If $Q^\pi(s,\pi'(s))\ge V^\pi(s)$ for all $s\in S$, $V^{\pi'}(s)\ge V^\pi(s)$ for all $s\in S$.
+
+This implies that $\pi'$ is better policy than $\pi$.
+:::
+
+$$
+\begin{aligned}
+v_\pi(s) &\le q_\pi(s,\pi'(s))\\
+&=\mathbb{E}[R_{t+1}+\gamma v_\pi(S_{t+1})|S_t=s,A_t=\pi'(s)]\\
+&=\mathbb{E}_{\pi'}[R_{t+1}+\gamma v_\pi(S_{t+1})|S_t=s]\\
+&\le\mathbb{E}_{\pi'}[R_{t+1}+\gamma q_\pi(S_{t+1},\pi'(S_{t+1}))|S_t=s]\\
+&=\mathbb{E}_{\pi'}[R_{t+1}+\gamma \mathbb{E}_{\pi'}[R_{t+2}+\gamma v_{\pi}(S_{t+2})|S_{t+1}, A_{t+1}=\pi'(S_{t+1})]|S_t=s]\\
+&=\mathbb{E}_{\pi'}[R_{t+1}+\gamma R_{t+2}+\gamma^2v_\pi(S_{t+2})|S_t=s]\\
+&\ \ \vdots\\
+&\le\mathbb{E}_{\pi'}[R_{t+1}+\gamma R_{t+2}+\gamma^2 R_{t+3}+\cdots|S_t=s]\\
+&=v_{\pi'}(s)
+\end{aligned}
+$$
+
+#### Policy Iteration
+$$\pi_0 \rightarrow \text{policy evaluation} \rightarrow V^{\pi_0} \rightarrow \text{policy improvement} \rightarrow \pi_1 \rightarrow \cdots \rightarrow \pi_* \rightarrow V^*$$
+- A **finite MDP** has finitely many policies, so this process converges to an **optimal policy** and an optimal value function in **finite iterations**.
+- If $\pi'$ is as good as, but not better than $\pi$, then $v_\pi=v_{\pi'}$ and satisfies Bellman optimality equation
+	- $$v_{\pi'}(s)=\max\limits_a\sum\limits_{s',r}p(s',r|s,a) [r+\gamma v_{\pi'}(s')]$$
+	- Thus, $\pi'$ is optimal.
+
+#### Pseudo Code
+
+```{pseudocode}
+#| label: alg-policy-iteration
+#| alg-title: 'Policy Iteration for estimating $\pi \approx \pi_*$'
+
+\begin{algorithmic}
+\State \textbf{1. Initialization}
+\State $V(s) \in \mathbb{R}$ and $\pi(s) \in \mathcal{A}(s)$ arbitrarily for all $s \in \mathcal{S}$
+
+\State
+\State \textbf{2. Policy Evaluation}
+\Repeat
+    \State $\Delta \gets 0$
+    \For{each $s \in \mathcal{S}$}
+        \State $v \gets V(s)$
+        \State $V(s) \gets \sum_{s', r} p(s', r \mid s, \pi(s)) [r + \gamma V(s')]$
+        \State $\Delta \gets \max(\Delta, |v - V(s)|)$
+    \EndFor
+\Until{$\Delta < \epsilon$}
+
+\State
+\State \textbf{3. Policy Improvement}
+\State $policy\_stable \gets \text{true}$
+\For{each $s \in \mathcal{S}$}
+    \State $old\_action \gets \pi(s)$
+    \State $\pi(s) \gets \arg\max_{a} \sum_{s', r} p(s', r \mid s, a) [r + \gamma V(s')]$
+    \If{$old\_action \neq \pi(s)$}
+        \State $policy\_stable \gets \text{false}$
+    \EndIf
+\EndFor
+
+\State
+\If{$policy\_stable$}
+    \State \textbf{stop} and return $V \approx v_*$ and $\pi \approx \pi_*$
+\Else
+    \State \textbf{go to 2}
+\EndIf
+\end{algorithmic}
+```
+
+### Summary
+
+Finding an optimal policy by solving Bellman optimality equation requires
+
+- **Markov property**
+- **Accurate knowledge** of environment dynamics (known MDP)
+- **Enough space and time** to do the computation
+
+**Dynamic Programming**
+
+- Under **model-based**, each iteration updates **every value function** in the table using **full backup** $\rightarrow$ effective for **medium-sized** problems
+- Usually evaluate $V(s)$ instead of $Q(s,a)$ because $|s| \ll |(s,a)|$
+- For large problems, DP suffers from the **curse of dimensionality**:
+	- The number of states grows exponentially with the number of state variables
+
+## Reinforcement Learning
+
+### Reinforcement Learning
+
+#### DP vs RL
+- Dynamic Programming (DP)
+	- Planning under **model-based** setting using **full-backup**.
+
+<!-- -->
+
+- Reinforcement Learning (RL)
+	- Learning under **model-free** setting using **sample backup**, and approximately solving the Bellman optimality equation.
+        
+	-  Monte Carlo (MC) method
+	- Temporal Difference (TD) learnings
+		- Sarsa
+		- Q-learning
