@@ -231,5 +231,238 @@
   <pubDate>Tue, 14 Apr 2026 00:00:00 GMT</pubDate>
   <media:content url="https://selianu.github.io/SelianBlog/posts/Reinforcement Learning 1/RL.png" medium="image" type="image/png" height="58" width="144"/>
 </item>
+<item>
+  <title>Reinforcement Learning 2</title>
+  <dc:creator>Selian </dc:creator>
+  <link>https://selianu.github.io/SelianBlog/posts/Reinforcement Learning 2/</link>
+  <description><![CDATA[ 
+
+
+
+
+<section id="dynamic-programming" class="level2">
+<h2 class="anchored" data-anchor-id="dynamic-programming">Dynamic Programming</h2>
+<p>Method for solving Markov Decision Processes (MDPs)</p>
+<ul>
+<li>DP assumes
+<ul>
+<li>Model-based</li>
+<li>The Markov property</li>
+</ul></li>
+</ul>
+<!-- -->
+<ul>
+<li>DP uses the Bellman equation to iteratively update value functions.</li>
+</ul>
+<!-- -->
+<ul>
+<li>Goal
+<ul>
+<li>Compute the optimal value function</li>
+<li>Derive the optimal policy</li>
+</ul></li>
+</ul>
+<!-- -->
+<p>Two main approach</p>
+<ul>
+<li><strong>Value-based approach</strong>
+<ul>
+<li>Directly update value functions</li>
+<li>Leads to <strong>Value Iteration</strong></li>
+</ul></li>
+<li><strong>Policy-based approach</strong>
+<ul>
+<li>Evaluate and improve policies</li>
+<li>Leads to <strong>Policy Iteration</strong></li>
+</ul></li>
+</ul>
+<section id="value-iteration" class="level3">
+<h3 class="anchored" data-anchor-id="value-iteration">Value Iteration</h3>
+<p><strong>Bellman Optimality Equation</strong> <img src="https://latex.codecogs.com/png.latex?v_*(s)%20=%20%5Cmax%5Climits_a%5Csum%5Climits_%7Bs',r%7Dp(s',r%7Cs,a)%5Br+%5Cgamma%20v_*(s')%5D"></p>
+<section id="value-iteration-procedure" class="level4">
+<h4 class="anchored" data-anchor-id="value-iteration-procedure">Value Iteration Procedure</h4>
+<p><img src="https://latex.codecogs.com/png.latex?V_%7Bk+1%7D(s)%5Cleftarrow%5Cmax%5Climits_a%5Csum%5Climits_%7Bs',r%7D%20p(s',r%7Cs,a)%5Br+%5Cgamma%20V_k(s')%5D"></p>
+<p><strong>Initialize <img src="https://latex.codecogs.com/png.latex?%5Crightarrow"> Update <img src="https://latex.codecogs.com/png.latex?%5Crightarrow"> Compute the Optimal Policy</strong></p>
+<p>Disadvantages 1. Policy often converges long before the values converge: values rarely changes 2. Slow: <img src="https://latex.codecogs.com/png.latex?O(S%5E2A)"> per iteration and needs many iterations to converge.</p>
+<p>Convergence - <img src="https://latex.codecogs.com/png.latex?%5Cepsilon:%20%5Clvert%20V_%7Bk+1%7D(s)%20-%20V_%7Bk%7D(s)%20%5Crvert%20%3C%20%5Cepsilon"> for all <img src="https://latex.codecogs.com/png.latex?s"></p>
+</section>
+<section id="value-iteration-pseudo-code" class="level4">
+<h4 class="anchored" data-anchor-id="value-iteration-pseudo-code">Value Iteration Pseudo Code</h4>
+<pre class="{pseudocode}"><code>#| label: alg-value-iteration
+#| alg-title: "Value Iteration for estimating $\\pi \\approx \\pi_*$"
+\begin{algorithmic}
+\item \textbf{Hyperparameter:} small threshold $\epsilon &gt; 0$ for the convergence check
+\item Initialize $V(s)$ arbitrarily for all $s \in \mathcal{S}$, except $V(\text{terminal}) = 0$
+
+\Repeat
+    \State $\Delta \gets 0$
+    \For{each $s \in \mathcal{S}$}
+        \State $v \gets V(s)$
+        \State $V(s) \gets \max_{a} \sum_{s', r} p(s', r \mid s, a) [r + \gamma V(s')]$
+        \State $\Delta \gets \max(\Delta, |v - V(s)|)$ 
+    \EndFor
+\Until{$\Delta &lt; \epsilon$} 
+
+\State \textbf{Output} a deterministic policy $\pi \approx \pi_*$ such that
+\State $\pi(s) = \arg\max_{a} \sum_{s', r} p(s', r \mid s, a) [r + \gamma V(s')]$
+\end{algorithmic}</code></pre>
+</section>
+</section>
+<section id="policy-iteration" class="level3">
+<h3 class="anchored" data-anchor-id="policy-iteration">Policy Iteration</h3>
+<section id="policy-iteration-procedure" class="level4">
+<h4 class="anchored" data-anchor-id="policy-iteration-procedure">Policy Iteration Procedure</h4>
+<ol type="1">
+<li><strong>Policy Evaluation</strong>
+<ul>
+<li>Compute <img src="https://latex.codecogs.com/png.latex?V%5E%5Cpi"> from the deterministic policy <img src="https://latex.codecogs.com/png.latex?%5Cpi"></li>
+<li><img src="https://latex.codecogs.com/png.latex?V_%7Bk+1%7D(s)%5Cleftarrow%5Csum%5Climits_%7Bs',r%7D%20p(s',r%7Cs,%5Cpi(s))%20%5Br+%5Cgamma%20V_k(s')%5D"></li>
+</ul>
+<ol type="1">
+<li>Initialize <img src="https://latex.codecogs.com/png.latex?V_0(s)=0"> for all states <img src="https://latex.codecogs.com/png.latex?s">.</li>
+<li>Update <img src="https://latex.codecogs.com/png.latex?V_%7Bk+1%7D(s)"> from all <img src="https://latex.codecogs.com/png.latex?V_k(s')"> (full backup) <img src="https://latex.codecogs.com/png.latex?%5Crightarrow"> until convergence to <img src="https://latex.codecogs.com/png.latex?V%5E%5Cpi(s)"></li>
+</ol></li>
+<li><strong>Policy Improvement</strong>
+<ul>
+<li>Improve policy <img src="https://latex.codecogs.com/png.latex?%5Cpi"> to <img src="https://latex.codecogs.com/png.latex?%5Cpi'"> using a greedy policy based on <img src="https://latex.codecogs.com/png.latex?V%5E%5Cpi"></li>
+<li><img src="https://latex.codecogs.com/png.latex?%5Cpi'(s)%20=%20%5Carg%5Cmax%5Climits_a%5Csum%5Climits_%7Bs',r%7D%20p(s',r%7Cs,a)%20%5Br+%5Cgamma%20V%5E%5Cpi(s')%5D%20=%20%5Carg%5Cmax%5Climits_a%20Q%5E%5Cpi(s,a)"></li>
+</ul></li>
+</ol>
+</section>
+<section id="value-vs-policy-iteration" class="level4">
+<h4 class="anchored" data-anchor-id="value-vs-policy-iteration">Value vs Policy Iteration</h4>
+<ul>
+<li>In Value Iteration, <img src="https://latex.codecogs.com/png.latex?%5Cpi_*"> is computed at the end using <img src="https://latex.codecogs.com/png.latex?V%5E*">.</li>
+<li>In Policy Iteration, improvement is done at every step.</li>
+</ul>
+<p><strong>Comparison to Value Iteration</strong> - Fewer iterations are needed to reach the optimal policy. - Faster convergence because the value update is based on a fixed policy.</p>
+<!-- -->
+<ul>
+<li>Since <img src="https://latex.codecogs.com/png.latex?Q%5E%5Cpi(s,%5Cpi'(s))%5Cge%20V%5E%5Cpi(s)%20=%20%5Csum%5Climits_a%5Cpi(a%7Cs)%20Q%5E%5Cpi(s,a)">, always either
+<ol type="1">
+<li><img src="https://latex.codecogs.com/png.latex?%5Cpi'"> is strictly better than <img src="https://latex.codecogs.com/png.latex?%5Cpi">, or</li>
+<li><img src="https://latex.codecogs.com/png.latex?%5Cpi'"> is optimal when <img src="https://latex.codecogs.com/png.latex?%5Cpi=%5Cpi'"></li>
+</ol></li>
+</ul>
+<p><img src="https://latex.codecogs.com/png.latex?%5CRightarrow"> Policy Improvement Theorem</p>
+</section>
+<section id="policy-improvement" class="level4">
+<h4 class="anchored" data-anchor-id="policy-improvement">Policy Improvement</h4>
+<div class="callout callout-style-default callout-important callout-titled" title="Policy Improvement Theorem">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Policy Improvement Theorem
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <img src="https://latex.codecogs.com/png.latex?%5Cpi"> and <img src="https://latex.codecogs.com/png.latex?%5Cpi'"> be two policies.</p>
+<p>If <img src="https://latex.codecogs.com/png.latex?Q%5E%5Cpi(s,%5Cpi'(s))%5Cge%20V%5E%5Cpi(s)"> for all <img src="https://latex.codecogs.com/png.latex?s%5Cin%20S">, <img src="https://latex.codecogs.com/png.latex?V%5E%7B%5Cpi'%7D(s)%5Cge%20V%5E%5Cpi(s)"> for all <img src="https://latex.codecogs.com/png.latex?s%5Cin%20S">.</p>
+<p>This implies that <img src="https://latex.codecogs.com/png.latex?%5Cpi'"> is better policy than <img src="https://latex.codecogs.com/png.latex?%5Cpi">.</p>
+</div>
+</div>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Baligned%7D%0Av_%5Cpi(s)%20&amp;%5Cle%20q_%5Cpi(s,%5Cpi'(s))%5C%5C%0A&amp;=%5Cmathbb%7BE%7D%5BR_%7Bt+1%7D+%5Cgamma%20v_%5Cpi(S_%7Bt+1%7D)%7CS_t=s,A_t=%5Cpi'(s)%5D%5C%5C%0A&amp;=%5Cmathbb%7BE%7D_%7B%5Cpi'%7D%5BR_%7Bt+1%7D+%5Cgamma%20v_%5Cpi(S_%7Bt+1%7D)%7CS_t=s%5D%5C%5C%0A&amp;%5Cle%5Cmathbb%7BE%7D_%7B%5Cpi'%7D%5BR_%7Bt+1%7D+%5Cgamma%20q_%5Cpi(S_%7Bt+1%7D,%5Cpi'(S_%7Bt+1%7D))%7CS_t=s%5D%5C%5C%0A&amp;=%5Cmathbb%7BE%7D_%7B%5Cpi'%7D%5BR_%7Bt+1%7D+%5Cgamma%20%5Cmathbb%7BE%7D_%7B%5Cpi'%7D%5BR_%7Bt+2%7D+%5Cgamma%20v_%7B%5Cpi%7D(S_%7Bt+2%7D)%7CS_%7Bt+1%7D,%20A_%7Bt+1%7D=%5Cpi'(S_%7Bt+1%7D)%5D%7CS_t=s%5D%5C%5C%0A&amp;=%5Cmathbb%7BE%7D_%7B%5Cpi'%7D%5BR_%7Bt+1%7D+%5Cgamma%20R_%7Bt+2%7D+%5Cgamma%5E2v_%5Cpi(S_%7Bt+2%7D)%7CS_t=s%5D%5C%5C%0A&amp;%5C%20%5C%20%5Cvdots%5C%5C%0A&amp;%5Cle%5Cmathbb%7BE%7D_%7B%5Cpi'%7D%5BR_%7Bt+1%7D+%5Cgamma%20R_%7Bt+2%7D+%5Cgamma%5E2%20R_%7Bt+3%7D+%5Ccdots%7CS_t=s%5D%5C%5C%0A&amp;=v_%7B%5Cpi'%7D(s)%0A%5Cend%7Baligned%7D%0A"></p>
+</section>
+<section id="policy-iteration-1" class="level4">
+<h4 class="anchored" data-anchor-id="policy-iteration-1">Policy Iteration</h4>
+<p><img src="https://latex.codecogs.com/png.latex?%5Cpi_0%20%5Crightarrow%20%5Ctext%7Bpolicy%20evaluation%7D%20%5Crightarrow%20V%5E%7B%5Cpi_0%7D%20%5Crightarrow%20%5Ctext%7Bpolicy%20improvement%7D%20%5Crightarrow%20%5Cpi_1%20%5Crightarrow%20%5Ccdots%20%5Crightarrow%20%5Cpi_*%20%5Crightarrow%20V%5E*"> - A <strong>finite MDP</strong> has finitely many policies, so this process converges to an <strong>optimal policy</strong> and an optimal value function in <strong>finite iterations</strong>. - If <img src="https://latex.codecogs.com/png.latex?%5Cpi'"> is as good as, but not better than <img src="https://latex.codecogs.com/png.latex?%5Cpi">, then <img src="https://latex.codecogs.com/png.latex?v_%5Cpi=v_%7B%5Cpi'%7D"> and satisfies Bellman optimality equation - <img src="https://latex.codecogs.com/png.latex?v_%7B%5Cpi'%7D(s)=%5Cmax%5Climits_a%5Csum%5Climits_%7Bs',r%7Dp(s',r%7Cs,a)%20%5Br+%5Cgamma%20v_%7B%5Cpi'%7D(s')%5D"> - Thus, <img src="https://latex.codecogs.com/png.latex?%5Cpi'"> is optimal.</p>
+</section>
+<section id="pseudo-code" class="level4">
+<h4 class="anchored" data-anchor-id="pseudo-code">Pseudo Code</h4>
+<pre class="{pseudocode}"><code>#| label: alg-policy-iteration
+#| alg-title: 'Policy Iteration for estimating $\pi \approx \pi_*$'
+
+\begin{algorithmic}
+\State \textbf{1. Initialization}
+\State $V(s) \in \mathbb{R}$ and $\pi(s) \in \mathcal{A}(s)$ arbitrarily for all $s \in \mathcal{S}$
+
+\State
+\State \textbf{2. Policy Evaluation}
+\Repeat
+    \State $\Delta \gets 0$
+    \For{each $s \in \mathcal{S}$}
+        \State $v \gets V(s)$
+        \State $V(s) \gets \sum_{s', r} p(s', r \mid s, \pi(s)) [r + \gamma V(s')]$
+        \State $\Delta \gets \max(\Delta, |v - V(s)|)$
+    \EndFor
+\Until{$\Delta &lt; \epsilon$}
+
+\State
+\State \textbf{3. Policy Improvement}
+\State $policy\_stable \gets \text{true}$
+\For{each $s \in \mathcal{S}$}
+    \State $old\_action \gets \pi(s)$
+    \State $\pi(s) \gets \arg\max_{a} \sum_{s', r} p(s', r \mid s, a) [r + \gamma V(s')]$
+    \If{$old\_action \neq \pi(s)$}
+        \State $policy\_stable \gets \text{false}$
+    \EndIf
+\EndFor
+
+\State
+\If{$policy\_stable$}
+    \State \textbf{stop} and return $V \approx v_*$ and $\pi \approx \pi_*$
+\Else
+    \State \textbf{go to 2}
+\EndIf
+\end{algorithmic}</code></pre>
+</section>
+</section>
+<section id="summary" class="level3">
+<h3 class="anchored" data-anchor-id="summary">Summary</h3>
+<p>Finding an optimal policy by solving Bellman optimality equation requires</p>
+<ul>
+<li><strong>Markov property</strong></li>
+<li><strong>Accurate knowledge</strong> of environment dynamics (known MDP)</li>
+<li><strong>Enough space and time</strong> to do the computation</li>
+</ul>
+<p><strong>Dynamic Programming</strong></p>
+<ul>
+<li>Under <strong>model-based</strong>, each iteration updates <strong>every value function</strong> in the table using <strong>full backup</strong> <img src="https://latex.codecogs.com/png.latex?%5Crightarrow"> effective for <strong>medium-sized</strong> problems</li>
+<li>Usually evaluate <img src="https://latex.codecogs.com/png.latex?V(s)"> instead of <img src="https://latex.codecogs.com/png.latex?Q(s,a)"> because <img src="https://latex.codecogs.com/png.latex?%7Cs%7C%20%5Cll%20%7C(s,a)%7C"></li>
+<li>For large problems, DP suffers from the <strong>curse of dimensionality</strong>:
+<ul>
+<li>The number of states grows exponentially with the number of state variables</li>
+</ul></li>
+</ul>
+</section>
+</section>
+<section id="reinforcement-learning" class="level2">
+<h2 class="anchored" data-anchor-id="reinforcement-learning">Reinforcement Learning</h2>
+<section id="reinforcement-learning-1" class="level3">
+<h3 class="anchored" data-anchor-id="reinforcement-learning-1">Reinforcement Learning</h3>
+<section id="dp-vs-rl" class="level4">
+<h4 class="anchored" data-anchor-id="dp-vs-rl">DP vs RL</h4>
+<ul>
+<li>Dynamic Programming (DP)
+<ul>
+<li>Planning under <strong>model-based</strong> setting using <strong>full-backup</strong>.</li>
+</ul></li>
+</ul>
+<!-- -->
+<ul>
+<li>Reinforcement Learning (RL)
+<ul>
+<li><p>Learning under <strong>model-free</strong> setting using <strong>sample backup</strong>, and approximately solving the Bellman optimality equation.</p></li>
+<li><p>Monte Carlo (MC) method</p></li>
+<li><p>Temporal Difference (TD) learnings</p>
+<ul>
+<li>Sarsa</li>
+<li>Q-learning</li>
+</ul></li>
+</ul></li>
+</ul>
+
+
+</section>
+</section>
+</section>
+
+ ]]></description>
+  <guid>https://selianu.github.io/SelianBlog/posts/Reinforcement Learning 2/</guid>
+  <pubDate>Tue, 14 Apr 2026 00:00:00 GMT</pubDate>
+  <media:content url="https://selianu.github.io/SelianBlog/posts/Reinforcement Learning 2" medium="image"/>
+</item>
 </channel>
 </rss>

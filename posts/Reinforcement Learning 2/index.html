@@ -6,8 +6,11 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Selian">
+<meta name="dcterms.date" content="2026-04-14">
+<meta name="description" content="한 줄 요약">
 
-<title>About – SelianBlog</title>
+<title>Reinforcement Learning 2 – SelianBlog</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -26,29 +29,30 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<link href="./favicon.ico" rel="icon">
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-c9ab10603ef178d10f4751f08a866a76.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-c9ab10603ef178d10f4751f08a866a76.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-c9ab10603ef178d10f4751f08a866a76.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-5046ca344fc5e2b25468e7a5d5239f90.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-5046ca344fc5e2b25468e7a5d5239f90.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-5046ca344fc5e2b25468e7a5d5239f90.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
-<script src="site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.js"></script>
-<link href="site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.css" rel="stylesheet">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../favicon.ico" rel="icon">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-c9ab10603ef178d10f4751f08a866a76.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-c9ab10603ef178d10f4751f08a866a76.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-c9ab10603ef178d10f4751f08a866a76.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-5046ca344fc5e2b25468e7a5d5239f90.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-5046ca344fc5e2b25468e7a5d5239f90.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-5046ca344fc5e2b25468e7a5d5239f90.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.js"></script>
+<link href="../../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -107,24 +111,50 @@ MathJax = {
       </style>
     
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
-<link rel="stylesheet" href="styles.css">
-<meta property="og:title" content="About – SelianBlog">
-<meta property="og:description" content="A blog built with Quarto">
-<meta property="og:image" content="https://selianu.github.io/SelianBlog/profile.png">
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+<meta property="og:title" content="Reinforcement Learning 2 – SelianBlog">
+<meta property="og:description" content="한 줄 요약">
 <meta property="og:site_name" content="SelianBlog">
-<meta property="og:image:height" content="512">
-<meta property="og:image:width" content="512">
 </head>
 
-<body class="nav-fixed fullcontent quarto-light">
+<body class="nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">SelianBlog</span>
     </a>
   </div>
@@ -135,17 +165,17 @@ MathJax = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./posts.html"> 
+    <a class="nav-link" href="../../posts.html"> 
 <span class="menu-text">Posts</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./reviews.html"> 
+    <a class="nav-link" href="../../reviews.html"> 
 <span class="menu-text">Reviews</span></a>
   </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./about.html" aria-current="page"> 
+    <a class="nav-link" href="../../about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item compact">
@@ -164,33 +194,304 @@ MathJax = {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#dynamic-programming" id="toc-dynamic-programming" class="nav-link active" data-scroll-target="#dynamic-programming">Dynamic Programming</a>
+  <ul class="collapse">
+  <li><a href="#value-iteration" id="toc-value-iteration" class="nav-link" data-scroll-target="#value-iteration">Value Iteration</a></li>
+  <li><a href="#policy-iteration" id="toc-policy-iteration" class="nav-link" data-scroll-target="#policy-iteration">Policy Iteration</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
+  </ul></li>
+  <li><a href="#reinforcement-learning" id="toc-reinforcement-learning" class="nav-link" data-scroll-target="#reinforcement-learning">Reinforcement Learning</a>
+  <ul class="collapse">
+  <li><a href="#reinforcement-learning-1" id="toc-reinforcement-learning-1" class="nav-link" data-scroll-target="#reinforcement-learning-1">Reinforcement Learning</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
-<div class="quarto-about-jolla">
-  <img src="profile.png" class="about-image
-  round " style="height: 15em; width: 15em;">
- <header id="title-block-header" class="quarto-title-block default">
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">About</h1>
+<h1 class="title">Reinforcement Learning 2</h1>
 </div>
-<div class="quarto-title-meta">
+
+<div>
+  <div class="description">
+    한 줄 요약
   </div>
-</header><main class="content" id="quarto-document-content">
-<p>Selian</p>
+</div>
 
 
-</main> 
-  <hr class="about-sep">
-   <div class="about-links">
-  <a href="https://github.com/SelianU" class="about-link" rel="" target="">
-    <i class="bi bi-github"></i>
-     <span class="about-link-text">Github</span>
-  </a>
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Selian </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">April 14, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="dynamic-programming" class="level2">
+<h2 class="anchored" data-anchor-id="dynamic-programming">Dynamic Programming</h2>
+<p>Method for solving Markov Decision Processes (MDPs)</p>
+<ul>
+<li>DP assumes
+<ul>
+<li>Model-based</li>
+<li>The Markov property</li>
+</ul></li>
+</ul>
+<!-- -->
+<ul>
+<li>DP uses the Bellman equation to iteratively update value functions.</li>
+</ul>
+<!-- -->
+<ul>
+<li>Goal
+<ul>
+<li>Compute the optimal value function</li>
+<li>Derive the optimal policy</li>
+</ul></li>
+</ul>
+<!-- -->
+<p>Two main approach</p>
+<ul>
+<li><strong>Value-based approach</strong>
+<ul>
+<li>Directly update value functions</li>
+<li>Leads to <strong>Value Iteration</strong></li>
+</ul></li>
+<li><strong>Policy-based approach</strong>
+<ul>
+<li>Evaluate and improve policies</li>
+<li>Leads to <strong>Policy Iteration</strong></li>
+</ul></li>
+</ul>
+<section id="value-iteration" class="level3">
+<h3 class="anchored" data-anchor-id="value-iteration">Value Iteration</h3>
+<p><strong>Bellman Optimality Equation</strong> <span class="math display">\[v_*(s) = \max\limits_a\sum\limits_{s',r}p(s',r|s,a)[r+\gamma v_*(s')]\]</span></p>
+<section id="value-iteration-procedure" class="level4">
+<h4 class="anchored" data-anchor-id="value-iteration-procedure">Value Iteration Procedure</h4>
+<p><span class="math display">\[V_{k+1}(s)\leftarrow\max\limits_a\sum\limits_{s',r} p(s',r|s,a)[r+\gamma V_k(s')]\]</span></p>
+<p><strong>Initialize <span class="math inline">\(\rightarrow\)</span> Update <span class="math inline">\(\rightarrow\)</span> Compute the Optimal Policy</strong></p>
+<p>Disadvantages 1. Policy often converges long before the values converge: values rarely changes 2. Slow: <span class="math inline">\(O(S^2A)\)</span> per iteration and needs many iterations to converge.</p>
+<p>Convergence - <span class="math inline">\(\epsilon: \lvert V_{k+1}(s) - V_{k}(s) \rvert &lt; \epsilon\)</span> for all <span class="math inline">\(s\)</span></p>
+</section>
+<section id="value-iteration-pseudo-code" class="level4">
+<h4 class="anchored" data-anchor-id="value-iteration-pseudo-code">Value Iteration Pseudo Code</h4>
+<pre class="{pseudocode}"><code>#| label: alg-value-iteration
+#| alg-title: "Value Iteration for estimating $\\pi \\approx \\pi_*$"
+\begin{algorithmic}
+\item \textbf{Hyperparameter:} small threshold $\epsilon &gt; 0$ for the convergence check
+\item Initialize $V(s)$ arbitrarily for all $s \in \mathcal{S}$, except $V(\text{terminal}) = 0$
+
+\Repeat
+    \State $\Delta \gets 0$
+    \For{each $s \in \mathcal{S}$}
+        \State $v \gets V(s)$
+        \State $V(s) \gets \max_{a} \sum_{s', r} p(s', r \mid s, a) [r + \gamma V(s')]$
+        \State $\Delta \gets \max(\Delta, |v - V(s)|)$ 
+    \EndFor
+\Until{$\Delta &lt; \epsilon$} 
+
+\State \textbf{Output} a deterministic policy $\pi \approx \pi_*$ such that
+\State $\pi(s) = \arg\max_{a} \sum_{s', r} p(s', r \mid s, a) [r + \gamma V(s')]$
+\end{algorithmic}</code></pre>
+</section>
+</section>
+<section id="policy-iteration" class="level3">
+<h3 class="anchored" data-anchor-id="policy-iteration">Policy Iteration</h3>
+<section id="policy-iteration-procedure" class="level4">
+<h4 class="anchored" data-anchor-id="policy-iteration-procedure">Policy Iteration Procedure</h4>
+<ol type="1">
+<li><strong>Policy Evaluation</strong>
+<ul>
+<li>Compute <span class="math inline">\(V^\pi\)</span> from the deterministic policy <span class="math inline">\(\pi\)</span></li>
+<li><span class="math display">\[V_{k+1}(s)\leftarrow\sum\limits_{s',r} p(s',r|s,\pi(s)) [r+\gamma V_k(s')]\]</span></li>
+</ul>
+<ol type="1">
+<li>Initialize <span class="math inline">\(V_0(s)=0\)</span> for all states <span class="math inline">\(s\)</span>.</li>
+<li>Update <span class="math inline">\(V_{k+1}(s)\)</span> from all <span class="math inline">\(V_k(s')\)</span> (full backup) <span class="math inline">\(\rightarrow\)</span> until convergence to <span class="math inline">\(V^\pi(s)\)</span></li>
+</ol></li>
+<li><strong>Policy Improvement</strong>
+<ul>
+<li>Improve policy <span class="math inline">\(\pi\)</span> to <span class="math inline">\(\pi'\)</span> using a greedy policy based on <span class="math inline">\(V^\pi\)</span></li>
+<li><span class="math display">\[\pi'(s) = \arg\max\limits_a\sum\limits_{s',r} p(s',r|s,a) [r+\gamma V^\pi(s')] = \arg\max\limits_a Q^\pi(s,a)\]</span></li>
+</ul></li>
+</ol>
+</section>
+<section id="value-vs-policy-iteration" class="level4">
+<h4 class="anchored" data-anchor-id="value-vs-policy-iteration">Value vs Policy Iteration</h4>
+<ul>
+<li>In Value Iteration, <span class="math inline">\(\pi_*\)</span> is computed at the end using <span class="math inline">\(V^*\)</span>.</li>
+<li>In Policy Iteration, improvement is done at every step.</li>
+</ul>
+<p><strong>Comparison to Value Iteration</strong> - Fewer iterations are needed to reach the optimal policy. - Faster convergence because the value update is based on a fixed policy.</p>
+<!-- -->
+<ul>
+<li>Since <span class="math inline">\(Q^\pi(s,\pi'(s))\ge V^\pi(s) = \sum\limits_a\pi(a|s) Q^\pi(s,a)\)</span>, always either
+<ol type="1">
+<li><span class="math inline">\(\pi'\)</span> is strictly better than <span class="math inline">\(\pi\)</span>, or</li>
+<li><span class="math inline">\(\pi'\)</span> is optimal when <span class="math inline">\(\pi=\pi'\)</span></li>
+</ol></li>
+</ul>
+<p><span class="math inline">\(\Rightarrow\)</span> Policy Improvement Theorem</p>
+</section>
+<section id="policy-improvement" class="level4">
+<h4 class="anchored" data-anchor-id="policy-improvement">Policy Improvement</h4>
+<div class="callout callout-style-default callout-important callout-titled" title="Policy Improvement Theorem">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Policy Improvement Theorem
 </div>
 </div>
- <!-- /main -->
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(\pi\)</span> and <span class="math inline">\(\pi'\)</span> be two policies.</p>
+<p>If <span class="math inline">\(Q^\pi(s,\pi'(s))\ge V^\pi(s)\)</span> for all <span class="math inline">\(s\in S\)</span>, <span class="math inline">\(V^{\pi'}(s)\ge V^\pi(s)\)</span> for all <span class="math inline">\(s\in S\)</span>.</p>
+<p>This implies that <span class="math inline">\(\pi'\)</span> is better policy than <span class="math inline">\(\pi\)</span>.</p>
+</div>
+</div>
+<p><span class="math display">\[
+\begin{aligned}
+v_\pi(s) &amp;\le q_\pi(s,\pi'(s))\\
+&amp;=\mathbb{E}[R_{t+1}+\gamma v_\pi(S_{t+1})|S_t=s,A_t=\pi'(s)]\\
+&amp;=\mathbb{E}_{\pi'}[R_{t+1}+\gamma v_\pi(S_{t+1})|S_t=s]\\
+&amp;\le\mathbb{E}_{\pi'}[R_{t+1}+\gamma q_\pi(S_{t+1},\pi'(S_{t+1}))|S_t=s]\\
+&amp;=\mathbb{E}_{\pi'}[R_{t+1}+\gamma \mathbb{E}_{\pi'}[R_{t+2}+\gamma v_{\pi}(S_{t+2})|S_{t+1}, A_{t+1}=\pi'(S_{t+1})]|S_t=s]\\
+&amp;=\mathbb{E}_{\pi'}[R_{t+1}+\gamma R_{t+2}+\gamma^2v_\pi(S_{t+2})|S_t=s]\\
+&amp;\ \ \vdots\\
+&amp;\le\mathbb{E}_{\pi'}[R_{t+1}+\gamma R_{t+2}+\gamma^2 R_{t+3}+\cdots|S_t=s]\\
+&amp;=v_{\pi'}(s)
+\end{aligned}
+\]</span></p>
+</section>
+<section id="policy-iteration-1" class="level4">
+<h4 class="anchored" data-anchor-id="policy-iteration-1">Policy Iteration</h4>
+<p><span class="math display">\[\pi_0 \rightarrow \text{policy evaluation} \rightarrow V^{\pi_0} \rightarrow \text{policy improvement} \rightarrow \pi_1 \rightarrow \cdots \rightarrow \pi_* \rightarrow V^*\]</span> - A <strong>finite MDP</strong> has finitely many policies, so this process converges to an <strong>optimal policy</strong> and an optimal value function in <strong>finite iterations</strong>. - If <span class="math inline">\(\pi'\)</span> is as good as, but not better than <span class="math inline">\(\pi\)</span>, then <span class="math inline">\(v_\pi=v_{\pi'}\)</span> and satisfies Bellman optimality equation - <span class="math display">\[v_{\pi'}(s)=\max\limits_a\sum\limits_{s',r}p(s',r|s,a) [r+\gamma v_{\pi'}(s')]\]</span> - Thus, <span class="math inline">\(\pi'\)</span> is optimal.</p>
+</section>
+<section id="pseudo-code" class="level4">
+<h4 class="anchored" data-anchor-id="pseudo-code">Pseudo Code</h4>
+<pre class="{pseudocode}"><code>#| label: alg-policy-iteration
+#| alg-title: 'Policy Iteration for estimating $\pi \approx \pi_*$'
+
+\begin{algorithmic}
+\State \textbf{1. Initialization}
+\State $V(s) \in \mathbb{R}$ and $\pi(s) \in \mathcal{A}(s)$ arbitrarily for all $s \in \mathcal{S}$
+
+\State
+\State \textbf{2. Policy Evaluation}
+\Repeat
+    \State $\Delta \gets 0$
+    \For{each $s \in \mathcal{S}$}
+        \State $v \gets V(s)$
+        \State $V(s) \gets \sum_{s', r} p(s', r \mid s, \pi(s)) [r + \gamma V(s')]$
+        \State $\Delta \gets \max(\Delta, |v - V(s)|)$
+    \EndFor
+\Until{$\Delta &lt; \epsilon$}
+
+\State
+\State \textbf{3. Policy Improvement}
+\State $policy\_stable \gets \text{true}$
+\For{each $s \in \mathcal{S}$}
+    \State $old\_action \gets \pi(s)$
+    \State $\pi(s) \gets \arg\max_{a} \sum_{s', r} p(s', r \mid s, a) [r + \gamma V(s')]$
+    \If{$old\_action \neq \pi(s)$}
+        \State $policy\_stable \gets \text{false}$
+    \EndIf
+\EndFor
+
+\State
+\If{$policy\_stable$}
+    \State \textbf{stop} and return $V \approx v_*$ and $\pi \approx \pi_*$
+\Else
+    \State \textbf{go to 2}
+\EndIf
+\end{algorithmic}</code></pre>
+</section>
+</section>
+<section id="summary" class="level3">
+<h3 class="anchored" data-anchor-id="summary">Summary</h3>
+<p>Finding an optimal policy by solving Bellman optimality equation requires</p>
+<ul>
+<li><strong>Markov property</strong></li>
+<li><strong>Accurate knowledge</strong> of environment dynamics (known MDP)</li>
+<li><strong>Enough space and time</strong> to do the computation</li>
+</ul>
+<p><strong>Dynamic Programming</strong></p>
+<ul>
+<li>Under <strong>model-based</strong>, each iteration updates <strong>every value function</strong> in the table using <strong>full backup</strong> <span class="math inline">\(\rightarrow\)</span> effective for <strong>medium-sized</strong> problems</li>
+<li>Usually evaluate <span class="math inline">\(V(s)\)</span> instead of <span class="math inline">\(Q(s,a)\)</span> because <span class="math inline">\(|s| \ll |(s,a)|\)</span></li>
+<li>For large problems, DP suffers from the <strong>curse of dimensionality</strong>:
+<ul>
+<li>The number of states grows exponentially with the number of state variables</li>
+</ul></li>
+</ul>
+</section>
+</section>
+<section id="reinforcement-learning" class="level2">
+<h2 class="anchored" data-anchor-id="reinforcement-learning">Reinforcement Learning</h2>
+<section id="reinforcement-learning-1" class="level3">
+<h3 class="anchored" data-anchor-id="reinforcement-learning-1">Reinforcement Learning</h3>
+<section id="dp-vs-rl" class="level4">
+<h4 class="anchored" data-anchor-id="dp-vs-rl">DP vs RL</h4>
+<ul>
+<li>Dynamic Programming (DP)
+<ul>
+<li>Planning under <strong>model-based</strong> setting using <strong>full-backup</strong>.</li>
+</ul></li>
+</ul>
+<!-- -->
+<ul>
+<li>Reinforcement Learning (RL)
+<ul>
+<li><p>Learning under <strong>model-free</strong> setting using <strong>sample backup</strong>, and approximately solving the Bellman optimality equation.</p></li>
+<li><p>Monte Carlo (MC) method</p></li>
+<li><p>Temporal Difference (TD) learnings</p>
+<ul>
+<li>Sarsa</li>
+<li>Q-learning</li>
+</ul></li>
+</ul></li>
+</ul>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
     const isCodeAnnotation = (el) => {
       for (const clz of el.classList) {
         if (clz.startsWith('code-annotation-')) {                     

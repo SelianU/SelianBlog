@@ -2,17 +2,19 @@
   {
     "listing": "/index.html",
     "items": [
-      "/posts/Reinforcement Learning 1/index.html"
+      "/posts/Reinforcement Learning 1/index.html",
+      "/posts/Reinforcement Learning 2/index.html"
+    ]
+  },
+  {
+    "listing": "/posts.html",
+    "items": [
+      "/posts/Reinforcement Learning 1/index.html",
+      "/posts/Reinforcement Learning 2/index.html"
     ]
   },
   {
     "listing": "/reviews.html",
     "items": []
-  },
-  {
-    "listing": "/posts.html",
-    "items": [
-      "/posts/Reinforcement Learning 1/index.html"
-    ]
   }
 ]
