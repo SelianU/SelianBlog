@@ -1,0 +1,419 @@
+---
+title: "DP & RL"
+author: "Selian"
+date: "2026-04-14"
+categories: [RL]
+image: "GPI.png"
+description: "Dynamic Programming, Reinforcement Learning"
+---
+
+## 1. Dynamic Programming
+
+Method for solving Markov Decision Processes (MDPs).
+
+**DP assumes**:
+
+- Model-based (known MDP): transition probabilities and rewards are given
+- The Markov property
+
+**DP uses the Bellman equation** to iteratively update value functions.
+
+**Goal**:
+
+- Compute the optimal value function
+- Derive the optimal policy
+
+### 1.1 Two main approaches
+
+- **Value-based approach**: Directly update value functions → **Value Iteration**
+- **Policy-based approach**: Evaluate and improve policies → **Policy Iteration**
+
+---
+
+### 1.2 Value Iteration
+
+Based on **Bellman Optimality Equation**:
+
+$$v_*(s) = \max_a \sum_{s',r} p(s',r|s,a)[r + \gamma v_*(s')]$$
+
+#### Procedure
+
+$$V_{k+1}(s) \leftarrow \max_a \sum_{s',r} p(s',r|s,a)[r + \gamma V_k(s')]$$
+
+**Initialize → Update → Compute the Optimal Policy**
+
+1. Initialize $V_0(s) = 0$ for all states (or arbitrarily)
+2. Iteratively update $V_{k+1}(s)$ from $V_k(s')$ (full backup) until convergence
+    - **Synchronous**: Update at once after calculate $V_{k+1}$ for all $s$
+    - **Asynchronous**: Update immediately after calculate $V_{k+1}$
+3. Extract the optimal policy with one-step lookahead after convergence:
+
+$$\pi^*(s) = \arg\max_a \sum_{s',r} p(s',r|s,a)[r + \gamma V^*(s')]$$
+
+**Convergence**: $|V_{k+1}(s) - V_k(s)| < \epsilon$ for all $s$
+
+#### Disadvantages
+
+1. Policy often converges long before the values converge
+	— Repeat unnecessary iterations while the value converges below $\epsilon$, even if the policy is already optimal.
+2. Slow: $O(S^2 A)$ per iteration, needs many iterations to converge.
+
+#### Pseudo Code
+
+```pseudocode
+#| label: algo-value-iteration
+#| html-line-number: true
+#| pdf-line-number: true
+
+\begin{algorithm}
+\caption{Value Iteration for estimating $\pi \approx \pi_*$}
+\begin{algorithmic}
+
+\State $\mathbf{Hyperparameter}$: small threshold $\epsilon > 0$ for convergence check
+\State Initialize $V(s)$ arbitrarily for all $s\in \mathcal{S}$, except $V(\text{terminal}) = 0$
+\State
+\Repeat
+	\State $\Delta\gets0$
+	\For{each $s\in\mathcal{S}$}
+		\State $v\gets V(s)$
+		\State $V(s)\gets\max_a\sum+{s',r} p(s',r|s,a) [r+\gamma V(s')]$
+        \State $\Delta\gets\max(\Delta,|v-V(s)|)$
+	\EndFor
+\Until{$\Delta<\epsilon$}
+\State
+\State $\mathbf{Output}$: deterministic policy $\pi\approx\pi^*$ such that
+\State $\pi(s) = \arg\max_a \sum_{s',r} p(s',r|s,a) [r + \gamma V(s')]$
+
+\end{algorithmic}
+\end{algorithm}
+```
+
+### 1.3 Policy Iteration
+
+Repeats **Policy Evaluation** and **Policy Improvement** until convergence, and if **the policy does not change, exit immediately**.
+
+$$\pi_0 \xrightarrow{PE} V^{\pi_0} \xrightarrow{PI} \pi_1 \xrightarrow{PE} V^{\pi_1} \xrightarrow{PI} \cdots \to \pi_* \to V^*$$
+
+#### Policy Evaluation
+
+Compute $V^\pi$ from the deterministic policy $\pi$:
+ 
+$$V_{k+1}(s) \leftarrow \sum_{s',r} p(s',r|s,\pi(s))[r + \gamma V_k(s')]$$
+
+- Fixed action $\rightarrow$ $O(S^2)$ / iteration
+- Update until $|V_{k+1}(s) - V_k(s)| < \epsilon$
+
+#### Policy Improvement
+
+Improve policy $\pi$ to $\pi'$ using a **greedy policy** based on $V^\pi$:
+
+$$\pi'(s) = \arg\max_a \sum_{s',r} p(s',r|s,a)[r + \gamma V^\pi(s')] = \arg\max_a Q^\pi(s,a)$$
+
+Since $Q^\pi(s, \pi'(s)) \geq V^\pi(s) = \sum_a \pi(a|s) Q^\pi(s,a)$, always either:
+
+1. $\pi'$ is strictly better than $\pi$, or
+2. $\pi'$ is optimal when $\pi = \pi'$
+
+→ **Policy Improvement Theorem**
+
+#### Policy Improvement Theorem
+
+:::{.callout-important title="Policy Improvement Theorem"}
+Let $\pi$ and $\pi'$ be two policies.
+If $Q^\pi(s, \pi'(s)) \geq V^\pi(s)$ for all $s \in S$, then $V^{\pi'}(s) \geq V^\pi(s)$ for all $s \in S$.
+This implies that $\pi'$ is a better policy than $\pi$.
+:::
+
+**Proof**:
+
+$$
+\begin{aligned}
+v_\pi(s) &\leq q_\pi(s, \pi'(s)) \\
+&= \mathbb{E}[R_{t+1} + \gamma v_\pi(S_{t+1}) \mid S_t=s, A_t=\pi'(s)] \\
+&= \mathbb{E}_{\pi'}[R_{t+1} + \gamma v_\pi(S_{t+1}) \mid S_t=s] \\
+&\leq \mathbb{E}_{\pi'}[R_{t+1} + \gamma q_\pi(S_{t+1}, \pi'(S_{t+1})) \mid S_t=s] \\
+&= \mathbb{E}_{\pi'}[R_{t+1} + \gamma \mathbb{E}_{\pi'}[R_{t+2} + \gamma v_\pi(S_{t+2}) \mid S_{t+1}, A_{t+1}=\pi'(S_{t+1})] \mid S_t=s] \\
+&= \mathbb{E}_{\pi'}[R_{t+1} + \gamma R_{t+2} + \gamma^2 v_\pi(S_{t+2}) \mid S_t=s] \\
+&\leq \mathbb{E}_{\pi'}[R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + \gamma^3 v_\pi(S_{t+3}) \mid S_t=s] \\
+&\ \ \vdots \\
+&\leq \mathbb{E}_{\pi'}[R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + \cdots \mid S_t=s] \\
+&= v_{\pi'}(s)
+\end{aligned}
+$$
+
+#### Converge
+
+A **finite MDP** has finitely many policies $\rightarrow$ Converge to optimal policy in finite iterations.
+
+If $\pi' = \pi$, $v_\pi = v_{\pi'}$:
+
+$$v_{\pi'}(s) = \max_a \sum_{s',r} p(s',r|s,a)[r + \gamma v_{\pi'}(s')]$$
+
+$\rightarrow$ Satisfy bellman optimality equation $\rightarrow$ $\pi'$ is optimal.
+
+#### Pseudo Code
+
+```pseudocode
+#| label: algo-policy-iteration
+#| html-line-number: true
+#| pdf-line-number: true
+
+\begin{algorithm}
+\caption{Policy Iteration for estimating $\pi \approx \pi_*$}
+\begin{algorithmic}
+
+\State $\textbf{1. Initialization}$
+\State $V(s) \in \mathbb{R}$ and $\pi(s) \in \mathcal{A}(s)$ arbitratily for all $s \in \mathcal{S}$
+\State
+\State $\textbf{2. Policy Evaluation}$
+\Repeat
+    \State $\Delta \gets 0$
+    \For{each $s \in \mathcal{S}$}
+        \State $v \gets V(s)$
+        \State $V(s) \gets \sum\limits_{s',r} p(s',r|s,\pi(s)) [r + \gamma V(s')]$
+        \State $\Delta \gets \max(\Delta, |v - V(s)|)$
+    \EndFor
+\Until{$\Delta<\epsilon$}
+\State
+\State $\textbf{3. Policy Improvement}$
+\State $policy-stable$ $\gets$ true
+\For{each $s \in \mathcal{S}$}
+    \State $old-action \gets \pi(s)$
+    \State $\pi(s) \gets \arg\max\limits_a \sum\limits_{s',r} p(s',r|s,a) [r + \gamma V(s')]$
+    \If{$old-action \neq \pi(s)$}
+        \State $policy-stable \gets$ false
+    \EndIf
+\EndFor
+\State
+\If{$policy-stable$}
+    \State stop and return $V \approx v_*$ and $\pi\approx\pi_*$
+\Else
+    \State $\textbf{go to 2}$
+\EndIf
+
+\end{algorithmic}
+\end{algorithm}
+```
+
+### 1.4 Value Iteration vs Policy Iteration
+
+| | Value Iteration | Policy Iteration |
+|--|----------------|-----------------|
+| Base Equation | Bellman Optimality | Bellman Expectation |
+| O/iteration | $O(S^2 A)$ | $O(S^2)$ (PE) |
+| Terminate Condition | $\|V_{k+1}-V_k\| < \epsilon$ | $\pi' = \pi$ |
+| Extract Policy | Once after Converge | each step |
+| Converge Speed | Slow | Fast |
+
+**Reason why Policy Iteration is Fast**: The amount of computation in one implementation step itself is the same as the max operation in Value Iteration. However, **Terminate Condition** is different - Value Iteration rotates until the value converges below $\epsilon$, while Policy Iteration stops immediately if the policy does not change. Policy converges much earlier than value, so it benefits from the total number of iteration.
+
+ 
+### 1.5 DP Summary
+ 
+Finding an optimal policy by solving Bellman optimality equation requires:
+ 
+- **Markov property**
+- **Accurate knowledge** of environment dynamics (known MDP)
+- **Enough space and time** to do the computation
+
+**Dynamic Programming 특징**:
+ 
+- Under **model-based**, each iteration updates **every value function** using **full backup** $\rightarrow$ **effective for medium-sized problems**
+- Usually evaluate $V(s)$ instead of $Q(s,a)$ because $|S| \ll |(S,A)|$
+- For large problems, DP suffers from the **curse of dimensionality**
+    - "The number of states grows exponentially with the number of state variables."
+
+## 2. Reinforcement Learning
+
+### 2.1 DP vs RL
+
+| | Dynamic Programming | Reinforcement Learning |
+|--|--------------------|-----------------------|
+| Setting | Model-based | Model-free |
+| Backup | Full backup | Sample backup |
+| Value | $V(s)$ | $Q(s,a)$ |
+| Policy | Deterministic greedy | $\epsilon$-greedy |
+| Update | Every state | sampled state |
+| Experience | Simulated (from model) | Real (from environment) |
+
+**Reason why DP uses $V(s)$**: We already know the transition probability $p(s'|s,a)$, so we can derive the greedy policy using only $V$:
+
+$$\pi_*(s) = \arg\max_a \sum_{s',r} p(s',r|s,a)[r + \gamma V^*(s')]$$
+
+**Reason why RL uses $Q(s,a)$**: Since we don't know the transition probability, we cannot use $V$ alone to determine the policy. $Q$ includes action information, allowing us to derive the policy without a model:
+
+$$\pi'(s) = \arg\max_a Q^\pi(s,a)$$
+
+RL Methods:
+
+- **Monte Carlo (MC)** method
+- **Temporal Difference (TD)** learning
+    - SARSA
+    - Q-learning
+
+### 2.2 Generalized Policy Iteration (GPI)
+
+Almost all RL methods can be described as GPI:
+
+$$\pi_0 \to q_{\pi_0} \to \pi_1 \to q_{\pi_1} \to \cdots \to \pi_* \to q_*$$
+
+- **Policy Evaluation (PE)**: Update value function to current policy
+- **Policy Improvement (PI)**: Update policy in a greedy manner with respect to the current value function
+
+If both **PE** and **PI** stabilize, Bellman optimality equation is satisfied $\rightarrow$ optimal.
+
+### 2.3 Monte Carlo Methods
+
+#### MC Features
+
+- Repeated random sampling to compute numerical results
+- **Tabular updating**, **model-free**, **no bootstrapping**
+- Learns from entire trajectories of sampled episodes $\rightarrow$ only apply to episodic tasks
+- Robust to violations of the Markov property (does not depend on successor value estimates)
+
+$$\text{Value} = \text{average of returns } G_t \text{ of sampled episodes}$$
+
+MC Policy Iteration GPI implements GPIs on an **episode-by-episode** basis:
+
+- Policy Evaluation: Estimate $Q(s,a) = q_\pi(s,a)$
+- Policy Improvement: $\epsilon$-greedy
+
+#### MC Prediction (Policy Evaluation)
+
+**Goal**: learn $q_\pi$ from entire episodes of real experience under policy $\pi$.
+
+MC Policy Evaluation uses **empirical mean return** instead of expected return.
+
+To estimate $q_\pi(s,a)$, for each time step $t$ when $(s,a)$ is visited:
+
+- Increment count: $n(s,a) \gets n(s,a) + 1$
+- Increment total return: $S(s,a) \gets S(s,a) + G_t$
+- Estimate mean return: $Q(s,a) = S(s,a) / n(s,a)$
+
+As $n(s,a) \to \infty$, $Q(s,a) \to q_\pi(s,a)$ (law of large numbers)
+
+**First-Visit MC vs Every-Visit MC**:
+
+- **First-Visit**: Update first visit to $(s,a)$ within an episode → Stable Convergence
+- **Every-Visit**: Update every visit to $(s,a)$ within an episode → Biased short returns mixed in, leading to unstable convergence
+- Running episodes infinitely makes both converge to the true value
+
+#### Incremental MC Updates
+
+$$\mu_k = \mu_{k-1} + \frac{1}{k}(x_k - \mu_{k-1})$$
+
+$$Q(S_t, A_t) \gets Q(S_t, A_t) + \frac{1}{n(S_t, A_t)}[G_t - Q(S_t, A_t)]$$
+
+#### Constant-$\alpha$ MC
+
+$$Q(S_t, A_t) \gets Q(S_t, A_t) + \alpha[G_t - Q(S_t, A_t)]$$
+
+Develop recursively:
+
+$$Q_n = \alpha G_n + (1-\alpha)\alpha G_{n-1} + (1-\alpha)^2 \alpha G_{n-2} + \cdots$$
+
+The weight of the $k$-th past sample is $(1-\alpha)^k \alpha$ $\rightarrow$ **exponentially forgotten**
+
+- $\frac{1}{n}$ type: Equal average of all pasts
+- Constant-$\alpha$: Exponentially forgotten $\rightarrow$ important for **non-stationary**
+- If $\alpha = 1$ most recent $G_t$ only is reflected and previous values are completely discarded
+
+### 2.4 Exploitation vs Exploration
+
+- **Exploitation**: Making the best decision by using already known information $\rightarrow$ Refine our policy efficiently from al already promising regions
+- **Exploration**: Searching for new decisions by gathering more information $\rightarrow$ Select random action with $\epsilon$-probability
+
+To trade-off Exploitation and Exploration, use **$\epsilon$-greedy policy**.
+
+### 2.5 MC Control ($\epsilon$-Greedy Policy Improvement)
+
+$$\pi'(a|s) = \begin{cases} 1 - \epsilon + \epsilon/m & \text{if } a = \arg\max_{a'} Q^\pi(s,a') \\ \epsilon/m & \text{otherwise} \end{cases}$$
+
+- All actions are selected with non-zero probability $\rightarrow$ guaranteed continuous exploration
+- In full backup DP, $\pi'(s) = \arg\max_a Q^\pi(s,a)$ $\rightarrow$ deterministic policy
+
+:::{.callout-note title="$\epsilon$-Greedy Policy Improvement"}
+For any $\epsilon$-greedy policy $\pi$, $\epsilon$-greedy policy $\pi'$ w.r.t. $q_\pi$ is always improved:
+$$v_{\pi'}(s) \ge v_{\pi}(s)$$
+:::
+
+**Proof**:
+
+$$
+\begin{aligned}
+q_\pi(s,\pi'(s)) &= \sum_a \pi'(a|s) q_\pi(s,a) \\
+&= \frac{\epsilon}{m}\sum_a q_\pi(s,a) + (1-\epsilon)\max_{a'} q_\pi(s,a') \\
+&\geq \frac{\epsilon}{m}\sum_a q_\pi(s,a) + (1-\epsilon)\sum_a \underbrace{\frac{\pi(a|s)-\epsilon/m}{1-\epsilon}}_{\text{Prob. dist. with sum 1}} q_\pi(s,a) \\
+&= \sum_a \pi(a|s) q_\pi(s,a) = v_\pi(s)
+\end{aligned}
+$$
+
+### 2.6 GLIE (Greedy in the Limit with Infinite Exploration)
+
+Both conditions must be satisfied **simultaneously**:
+
+**Condition 1** — Explored infinitely:
+
+$$\lim_{k \to \infty} n_k(s,a) = \infty$$
+
+**Condition 2** — policy converges to greedy policy:
+
+$$\lim_{k \to \infty} \pi_k(a|s) = 1 \quad \text{where } a = \arg\max_{a'} Q_k(s,a')$$
+
+**Set to $\epsilon_k = \frac{1}{k}$ to satisfy both conditions simultaneously**:
+
+$$\pi_k(a^*|s) = 1 - \frac{1}{k} + \frac{1}{mk} \to 1$$
+
+**Why are both conditions necessary**:
+
+| Condition        | Problem                                                                     |
+|------------------|------------------------------------------------------------------------|
+| Condition 1 only | Continuously exploring $\rightarrow$ cannot converge to greedy policy       |
+| Condition 2 only | Too early convergence to greedy $\rightarrow$ unvisited $(s,a)$ pairs occur |
+
+**Problems with fixed $\epsilon$**
+
+The probability of selecting the greedy action remains permanently below 1: $1 - \epsilon + \epsilon/m < 1$ 
+$\rightarrow$ cannot converge to the true optimal policy
+
+**GLIE MC Control**:
+
+- In the $k$-th episode, for each $(S_t, A_t)$:
+    - $n(S_t, A_t) \gets n(S_t, A_t) + 1$
+    - $Q(S_t, A_t) \gets Q(S_t, A_t) + \frac{1}{n(S_t, A_t)}[G_t - Q(S_t, A_t)]$
+- Improve policy with the new action-value function: $\epsilon = \frac{1}{k}$, $\pi \gets \epsilon\text{-greedy}(Q)$
+
+$Q(s,a) \to q_*(s,a)$ (converge to optimal)
+
+#### MC Method Pseudo Code
+
+```pseudocode
+#| label: algo-mc-control
+#| html-line-number: true
+#| pdf-line-number: true
+
+\begin{algorithm}
+\caption{Monte Carlo Method}
+\begin{algorithmic}
+
+\State $\textbf{Initialize}$ $Q(S,A)$, all $S\in\mathcal{S}$, $A\in\mathcal{A}(S)$, arbitrarily and $Q(\text{terminal},\cdot)=0$
+\State $\hspace{2em}Returns(S,A)$ $\gets$ empty list
+\State $\hspace{2em}\pi \gets$ arbitrarily $\epsilon$-soft policy (non-empty probabilities)
+\State
+\Repeat
+    \State (a) Generate an episode using $\pi$: $S_0, A_0, R_1, S_1, \ldots, S_{T-1}, A_{T-1}, R_T$
+    \State $\hspace{1.5em}G \gets 0$
+    \State (b) Repeat (for each step of episode), $t=T-1, T-2, \ldots, 0$:
+    \State $\hspace{1.5em}G \gets \gamma G + R_{t+1}$
+    \State $\hspace{1.5em}$ Unless $(S_t, A_t)$ appears in $(S_0, A_0), \ldots, (S_{t-1}, A_{t-1})$: $\gets$ first-visit only
+    \State $\hspace{3.5em}$ Append $G$ to $Returns(S_t, A_t)$
+    \State $\hspace{3.5em}$ $Q(S_t, A_t) \gets$ average($Returns(S_t, A_t)$)
+    \State (c) For each $S_t$ in the episode:
+    \State $\hspace{1.5em}A^* \gets \arg\max_a Q(S_t, a)$
+    \State $\hspace{1.5em}$ For all $a \in \mathcal{A}(S_t)$:
+    \State $\hspace{1.5em}\pi(a|S_t) \gets \begin{cases} 1 - \epsilon + \frac{\epsilon}{|\mathcal{A}(S)|} & \text{if } a = A^* \\ \frac{\epsilon}{|\mathcal{A}(S)|} & \text{otherwise} \end{cases}$
+\Until{forever (for each episode)}
+
+\end{algorithmic}
+\end{algorithm}
+```
