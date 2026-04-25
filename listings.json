@@ -2,15 +2,15 @@
   {
     "listing": "/index.html",
     "items": [
-      "/posts/Reinforcement Learning 1/index.html",
-      "/posts/Reinforcement Learning 2/index.html"
+      "/posts/MDP & Bellman Equation/index.html",
+      "/posts/DP & RL/index.html"
     ]
   },
   {
     "listing": "/posts.html",
     "items": [
-      "/posts/Reinforcement Learning 1/index.html",
-      "/posts/Reinforcement Learning 2/index.html"
+      "/posts/MDP & Bellman Equation/index.html",
+      "/posts/DP & RL/index.html"
     ]
   },
   {

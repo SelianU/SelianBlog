@@ -10,7 +10,7 @@
 <meta name="dcterms.date" content="2026-04-14">
 <meta name="description" content="Introduction, MDP, Bellman Equation">
 
-<title>Reinforcement Learning 1 – SelianBlog</title>
+<title>MDP &amp; Bellman Equation – SelianBlog</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -137,9 +137,9 @@ window.Quarto = {
 </script>
 
 <link rel="stylesheet" href="../../styles.css">
-<meta property="og:title" content="Reinforcement Learning 1 – SelianBlog">
+<meta property="og:title" content="MDP &amp; Bellman Equation – SelianBlog">
 <meta property="og:description" content="Introduction, MDP, Bellman Equation">
-<meta property="og:image" content="https://selianu.github.io/SelianBlog/posts/Reinforcement Learning 1/RL.png">
+<meta property="og:image" content="https://selianu.github.io/SelianBlog/posts/MDP &amp; Bellman Equation/RL.png">
 <meta property="og:site_name" content="SelianBlog">
 <meta property="og:image:height" content="143">
 <meta property="og:image:width" content="353">
@@ -197,21 +197,46 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">1. Introduction</a>
   <ul class="collapse">
-  <li><a href="#ml-algorithms" id="toc-ml-algorithms" class="nav-link" data-scroll-target="#ml-algorithms">ML Algorithms</a></li>
+  <li><a href="#rl-applications" id="toc-rl-applications" class="nav-link" data-scroll-target="#rl-applications">1.1 RL Applications</a></li>
+  <li><a href="#components-of-rl" id="toc-components-of-rl" class="nav-link" data-scroll-target="#components-of-rl">1.2 Components of RL</a></li>
   </ul></li>
-  <li><a href="#markov-decision-process" id="toc-markov-decision-process" class="nav-link" data-scroll-target="#markov-decision-process">Markov Decision Process</a>
+  <li><a href="#markov-decision-process" id="toc-markov-decision-process" class="nav-link" data-scroll-target="#markov-decision-process">2. Markov Decision Process</a>
   <ul class="collapse">
-  <li><a href="#grid-world" id="toc-grid-world" class="nav-link" data-scroll-target="#grid-world">Grid World</a></li>
-  <li><a href="#markov-property" id="toc-markov-property" class="nav-link" data-scroll-target="#markov-property">Markov Property</a></li>
-  <li><a href="#markov-decision-process-1" id="toc-markov-decision-process-1" class="nav-link" data-scroll-target="#markov-decision-process-1">Markov Decision Process</a></li>
-  <li><a href="#reward-policy" id="toc-reward-policy" class="nav-link" data-scroll-target="#reward-policy">Reward &amp; Policy</a></li>
+  <li><a href="#grid-world" id="toc-grid-world" class="nav-link" data-scroll-target="#grid-world">2.1 Grid World</a></li>
+  <li><a href="#markov-property" id="toc-markov-property" class="nav-link" data-scroll-target="#markov-property">2.2 Markov Property</a></li>
+  <li><a href="#markov-decision-process-mdp" id="toc-markov-decision-process-mdp" class="nav-link" data-scroll-target="#markov-decision-process-mdp">2.3 Markov Decision Process (MDP)</a></li>
   </ul></li>
-  <li><a href="#bellman-equation" id="toc-bellman-equation" class="nav-link" data-scroll-target="#bellman-equation">Bellman Equation</a>
+  <li><a href="#reward-policy" id="toc-reward-policy" class="nav-link" data-scroll-target="#reward-policy">3. Reward &amp; Policy</a>
   <ul class="collapse">
-  <li><a href="#bellman-equation-1" id="toc-bellman-equation-1" class="nav-link" data-scroll-target="#bellman-equation-1">Bellman Equation</a></li>
-  <li><a href="#optimal-policy" id="toc-optimal-policy" class="nav-link" data-scroll-target="#optimal-policy">Optimal Policy</a></li>
+  <li><a href="#reward" id="toc-reward" class="nav-link" data-scroll-target="#reward">3.1 Reward</a></li>
+  <li><a href="#type-of-reward" id="toc-type-of-reward" class="nav-link" data-scroll-target="#type-of-reward">3.2 Type of Reward</a></li>
+  <li><a href="#return" id="toc-return" class="nav-link" data-scroll-target="#return">3.3 Return</a></li>
+  <li><a href="#policy" id="toc-policy" class="nav-link" data-scroll-target="#policy">3.4 Policy</a></li>
+  <li><a href="#summary-of-notations" id="toc-summary-of-notations" class="nav-link" data-scroll-target="#summary-of-notations">3.5 Summary of Notations</a></li>
+  </ul></li>
+  <li><a href="#value-functions" id="toc-value-functions" class="nav-link" data-scroll-target="#value-functions">4. Value Functions</a>
+  <ul class="collapse">
+  <li><a href="#state-value-function" id="toc-state-value-function" class="nav-link" data-scroll-target="#state-value-function">4.1 State-Value Function</a></li>
+  <li><a href="#action-value-function" id="toc-action-value-function" class="nav-link" data-scroll-target="#action-value-function">4.2 Action-Value Function</a></li>
+  <li><a href="#advantage-function" id="toc-advantage-function" class="nav-link" data-scroll-target="#advantage-function">4.3 Advantage Function</a></li>
+  </ul></li>
+  <li><a href="#bellman-expectation-equation" id="toc-bellman-expectation-equation" class="nav-link" data-scroll-target="#bellman-expectation-equation">5. Bellman Expectation Equation</a>
+  <ul class="collapse">
+  <li><a href="#proof-state-value-function" id="toc-proof-state-value-function" class="nav-link" data-scroll-target="#proof-state-value-function">5.1 Proof State-Value Function</a></li>
+  <li><a href="#precautions-for-induction" id="toc-precautions-for-induction" class="nav-link" data-scroll-target="#precautions-for-induction">5.2 Precautions for induction</a></li>
+  <li><a href="#marking-caution" id="toc-marking-caution" class="nav-link" data-scroll-target="#marking-caution">5.3 Marking caution</a></li>
+  <li><a href="#proof-action-value-function" id="toc-proof-action-value-function" class="nav-link" data-scroll-target="#proof-action-value-function">5.4 Proof Action-Value Function</a></li>
+  <li><a href="#backup-diagram-relationship" id="toc-backup-diagram-relationship" class="nav-link" data-scroll-target="#backup-diagram-relationship">5.5 Backup Diagram Relationship</a></li>
+  </ul></li>
+  <li><a href="#bellman-optimality-equation" id="toc-bellman-optimality-equation" class="nav-link" data-scroll-target="#bellman-optimality-equation">6. Bellman Optimality Equation</a>
+  <ul class="collapse">
+  <li><a href="#optimal-value-functions" id="toc-optimal-value-functions" class="nav-link" data-scroll-target="#optimal-value-functions">6.1 Optimal Value Functions</a></li>
+  <li><a href="#theorem-optimal-policy-existence" id="toc-theorem-optimal-policy-existence" class="nav-link" data-scroll-target="#theorem-optimal-policy-existence">6.2 Theorem (Optimal Policy Existence)</a></li>
+  <li><a href="#finding-an-optimal-policy" id="toc-finding-an-optimal-policy" class="nav-link" data-scroll-target="#finding-an-optimal-policy">6.3 Finding an Optimal Policy</a></li>
+  <li><a href="#important-formulas" id="toc-important-formulas" class="nav-link" data-scroll-target="#important-formulas">6.4 Important formulas</a></li>
+  <li><a href="#bellman-optimality-equation-1" id="toc-bellman-optimality-equation-1" class="nav-link" data-scroll-target="#bellman-optimality-equation-1">6.5 Bellman Optimality Equation</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -221,7 +246,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Reinforcement Learning 1</h1>
+<h1 class="title">MDP &amp; Bellman Equation</h1>
   <div class="quarto-categories">
     <div class="quarto-category">RL</div>
   </div>
@@ -259,231 +284,302 @@ window.Quarto = {
 
 
 <section id="introduction" class="level2">
-<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
-<p><strong>RL Applications</strong></p>
+<h2 class="anchored" data-anchor-id="introduction">1. Introduction</h2>
+<section id="rl-applications" class="level3">
+<h3 class="anchored" data-anchor-id="rl-applications">1.1 RL Applications</h3>
 <ul>
 <li>Robotics &amp; Autonomous Driving</li>
 <li>Game AI</li>
-<li>Finance &amp; Training</li>
+<li>Finance &amp; Trading</li>
 <li>Recommendation System</li>
 <li>Optimization System</li>
 </ul>
-<section id="ml-algorithms" class="level3">
-<h3 class="anchored" data-anchor-id="ml-algorithms">ML Algorithms</h3>
-<p>State(<span class="math inline">\(S_t\)</span>), Action(<span class="math inline">\(A_t\)</span>), Environment, Reward(<span class="math inline">\(R_{t+1}\)</span>)</p>
+</section>
+<section id="components-of-rl" class="level3">
+<h3 class="anchored" data-anchor-id="components-of-rl">1.2 Components of RL</h3>
+<ul>
+<li><strong>State</strong> (<span class="math inline">\(S_t\)</span>): State of Environment at time <span class="math inline">\(t\)</span>.</li>
+<li><strong>Action</strong> (<span class="math inline">\(A_t\)</span>): Action of Agent based on <span class="math inline">\(S_t\)</span>.</li>
+<li><strong>Environment</strong>: Generate new state <span class="math inline">\(S_{t+1}\)</span> and reward <span class="math inline">\(R_{t+1}\)</span> based on agent’s action.</li>
+<li><strong>Reward</strong> (<span class="math inline">\(R_{t+1}\)</span>): Scalar feedback indicating the effect of the action.</li>
+</ul>
 <p><img src="RL.png" class="img-fluid"></p>
 </section>
 </section>
 <section id="markov-decision-process" class="level2">
-<h2 class="anchored" data-anchor-id="markov-decision-process">Markov Decision Process</h2>
+<h2 class="anchored" data-anchor-id="markov-decision-process">2. Markov Decision Process</h2>
 <section id="grid-world" class="level3">
-<h3 class="anchored" data-anchor-id="grid-world">Grid World</h3>
+<h3 class="anchored" data-anchor-id="grid-world">2.1 Grid World</h3>
+<p><strong>Deterministic grid world</strong> vs <strong>Stochastic grid world</strong>:</p>
 <ul>
-<li><strong>Deterministic</strong> grid world <code>vs</code> <strong>Stochastic</strong> grid world</li>
+<li>Deterministic: Output is fully determined by the present state and action.</li>
+<li>Stochastic: Random outputs from same state and action.</li>
 </ul>
 </section>
 <section id="markov-property" class="level3">
-<h3 class="anchored" data-anchor-id="markov-property">Markov Property</h3>
-<p>Stochastic Process</p>
+<h3 class="anchored" data-anchor-id="markov-property">2.2 Markov Property</h3>
+<p><strong>Stochastic Process</strong>:</p>
 <ul>
-<li>Discrete-time random process: <span class="math inline">\(S_0, S_1, \cdots, S_t, \cdots\)</span></li>
-<li>Continuous-time random process: <span class="math inline">\(\{S_t|t\ge0\}\)</span></li>
-<li>Markov Property: <span class="math inline">\(P(S_{t+1}=s'|S_t=s)=P(S_{t+1}=s'|S_0=s_0,S_1=s_1,\cdots,S_t=s_t)\)</span>
-<ul>
-<li><span class="math inline">\(S_{t+1}=s'\)</span> does not depend on past states.</li>
-</ul></li>
+<li>Discrete-time random process: <span class="math inline">\(S_0, S_1, \ldots, S_t, \ldots\)</span></li>
+<li>Continuous-time random process: <span class="math inline">\(\{S_t \mid t \geq 0\}\)</span></li>
 </ul>
-<p>Markov Process <span class="math inline">\((S,P)\)</span></p>
-<ul>
-<li><span class="math inline">\(S\)</span>: A finite set of states.</li>
-<li><span class="math inline">\(P\)</span>: A state transition probability matrix <span class="math inline">\([P_{ij}]\)</span>, <span class="math inline">\(P_{ij}=P(s_j|s_i) = P(S_{t+1}=s_j|S_t=s_i)\)</span>
-<ul>
-<li>Sum of row = 1</li>
-</ul></li>
-</ul>
-</section>
-<section id="markov-decision-process-1" class="level3">
-<h3 class="anchored" data-anchor-id="markov-decision-process-1">Markov Decision Process</h3>
-<ul>
-<li>MDP: <span class="math inline">\((S, A, P, R, \gamma)\)</span>
-<ul>
-<li><span class="math inline">\(S\)</span>: State space</li>
-<li><span class="math inline">\(A\)</span>: Action space</li>
-<li><span class="math inline">\(P\)</span>: State transition probability, <span class="math inline">\(P^{a}_{ss'} = p(s'|s,a) = P(S_{t+1}=s'|S_t=s,A_t=a)\)</span></li>
-<li><span class="math inline">\(R\)</span>: Reward function <span class="math inline">\(R_{ss'}^a,R_s,R^a_s\)</span></li>
-<li><span class="math inline">\(\gamma\in[0,1]\)</span>: Discount factor</li>
-</ul></li>
-<li>Model-based: known MDP</li>
-<li>Model-free: unknown MDP</li>
-</ul>
-<p>MDP <span class="math inline">\(\rightarrow\)</span> <span class="math inline">\(S\)</span> and <span class="math inline">\(A\)</span> continuous OK.</p>
-</section>
-<section id="reward-policy" class="level3">
-<h3 class="anchored" data-anchor-id="reward-policy">Reward &amp; Policy</h3>
-<section id="reward" class="level4">
-<h4 class="anchored" data-anchor-id="reward">Reward</h4>
-<ul>
-<li>Reward <span class="math inline">\(R_t\)</span>: scalar feedback</li>
-<li>Agent’s goal: maximize the cumulative sum of rewards</li>
-</ul>
+<p><strong>Markov Property (memoryless property)</strong>:</p>
+<p><span class="math display">\[P(S_{t+1} = s' \mid S_t = s) = P(S_{t+1} = s' \mid S_0, S_1, \ldots, S_t = s)\]</span></p>
 <blockquote class="blockquote">
-<p>All goals can be described by the maximization of the expected value of the cumulative sum of rewards. - Reward Hypothesis</p>
+<p>Given the present state <span class="math inline">\(S_t = s\)</span>, the future state <span class="math inline">\(S_{t+1} = s\)</span> does not depend on past states.</p>
 </blockquote>
+<p><strong>Markov Process</strong> <span class="math inline">\((S, P)\)</span>:</p>
 <ul>
-<li>State Transition Probability
+<li><span class="math inline">\(S\)</span>: Finite set of states</li>
+<li><span class="math inline">\(P\)</span>: State transition probability matrix, <span class="math inline">\(P_{ij} = P(s_j \mid s_i) = P(S_{t+1}=s_j \mid S_t=s_i)\)</span>
 <ul>
-<li><span class="math inline">\(P_{ss'}^a = p(s'|s,a) = P(S_{t+1}=s'|S_t=s,A_t=a) = \sum\limits_{r\in R}p(s',r|s,a)\)</span></li>
-</ul></li>
-<li>Expected Reward for State-Action Pair
-<ul>
-<li><span class="math inline">\(R_s^a = r(s,a) = E[R_{t+1}|S_t=s,A_t=a] = \sum\limits_{r\in R}r\sum\limits_{s'\in S}p(r|s,a)\)</span></li>
-</ul></li>
-<li>Expected Reward for State-Action-Next State Triple
-<ul>
-<li><span class="math inline">\(R_{ss'}^a = r(s,a,s') = E[R_{t+1}|S_t=s,A_t=a,S_{t+1}=s'] = \frac{\sum\limits_{r\in R}rp(r|s,a,s')}{p(s'|s,a)}\)</span></li>
+<li>Sum of entries in each row = 1</li>
 </ul></li>
 </ul>
 </section>
-<section id="return" class="level4">
-<h4 class="anchored" data-anchor-id="return">Return</h4>
+<section id="markov-decision-process-mdp" class="level3">
+<h3 class="anchored" data-anchor-id="markov-decision-process-mdp">2.3 Markov Decision Process (MDP)</h3>
+<p>An MDP is a tuple <span class="math inline">\((S, A, P, R, \gamma)\)</span>.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Symbol</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(S\)</span></td>
+<td>State space</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(A\)</span></td>
+<td>Action space</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(P^a_{ss'} = p(s' \mid s, a)\)</span></td>
+<td>State transition probability</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(R\)</span></td>
+<td>Reward function (<span class="math inline">\(R_s\)</span>, <span class="math inline">\(R_s^a\)</span>, <span class="math inline">\(R_{ss'}^a\)</span>)</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(\gamma \in [0, 1]\)</span></td>
+<td>Discount factor</td>
+</tr>
+</tbody>
+</table>
 <ul>
-<li>Return <span class="math inline">\(G_t\)</span>: total discounted reward</li>
-<li><span class="math inline">\(G_t = R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + \cdots = \sum\limits_{k=0}^{\infty}\gamma^k R_{t+k+1}\)</span></li>
+<li><strong>Model-based</strong>: known MDP (Given transition probability)</li>
+<li><strong>Model-free</strong>: unknown MDP (Ungiven transition probability)</li>
 </ul>
-<p>MDP가 discount하는 이유 - Mathematically convenient, Accounts for uncertainty</p>
-</section>
-<section id="policy" class="level4">
-<h4 class="anchored" data-anchor-id="policy">Policy</h4>
-<ul>
-<li>A stochastic policy <span class="math inline">\(\pi(a|s) = P(A_t=a|S_t=s)\)</span></li>
-<li>A deterministic policy <span class="math inline">\(\pi(s) = a\)</span></li>
-</ul>
-<!-- -->
-<ul>
-<li>Under a known MDP, <span class="math inline">\(\pi_*(s)\)</span> exists.</li>
-<li>Under an unknown MDP, an <span class="math inline">\(\epsilon\)</span>-greedy policy is needed
-<ul>
-<li><span class="math inline">\(1-\epsilon\)</span>: Choose the optimal value</li>
-<li><span class="math inline">\(\epsilon\)</span>: Choose randomly</li>
-</ul></li>
-</ul>
-</section>
-<section id="summary-of-notations" class="level4">
-<h4 class="anchored" data-anchor-id="summary-of-notations">Summary of Notations</h4>
-<ul>
-<li><span class="math inline">\(\pi\)</span>: Policy</li>
-<li><span class="math inline">\(\pi(a|s)\)</span>: Stochastic policy</li>
-<li><span class="math inline">\(\pi(s)\)</span>: Deterministic policy</li>
-</ul>
-<!-- -->
-<ul>
-<li><span class="math inline">\(v_{\pi}(s)\)</span>: State-value function</li>
-<li><span class="math inline">\(v_*(s)\)</span>: Optimal state-value function</li>
-</ul>
-<!-- -->
-<ul>
-<li><span class="math inline">\(q_{\pi}(s,a)\)</span>: Action-value function</li>
-<li><span class="math inline">\(q_*(s,a)\)</span>: Optimal action-value function</li>
-</ul>
+<p>MDP theory holds even if <span class="math inline">\(S\)</span> and <span class="math inline">\(A\)</span> is continuous.</p>
 </section>
 </section>
-</section>
-<section id="bellman-equation" class="level2">
-<h2 class="anchored" data-anchor-id="bellman-equation">Bellman Equation</h2>
-<section id="bellman-equation-1" class="level3">
-<h3 class="anchored" data-anchor-id="bellman-equation-1">Bellman Equation</h3>
-<section id="value-functions" class="level4">
-<h4 class="anchored" data-anchor-id="value-functions">Value Functions</h4>
-<p>Goodness of each state <span class="math inline">\(s\)</span>(or <span class="math inline">\((s,a)\)</span>) when following policy <span class="math inline">\(\pi\)</span>, in terms fo the expectation of <span class="math inline">\(G_t\)</span>.</p>
+<section id="reward-policy" class="level2">
+<h2 class="anchored" data-anchor-id="reward-policy">3. Reward &amp; Policy</h2>
+<section id="reward" class="level3">
+<h3 class="anchored" data-anchor-id="reward">3.1 Reward</h3>
 <ul>
-<li>State-Value function
-<ul>
-<li><span class="math inline">\(v_\pi(s) = E_\pi[G_t|S_t=s] = \sum\limits_a \pi(a|s)q(s,a)\)</span></li>
-</ul></li>
-<li>Action-Value function
-<ul>
-<li><span class="math inline">\(q_\pi(s,a) = E_\pi[G_t|S_t=s,A_t=a]\)</span></li>
-</ul></li>
+<li>Reward <span class="math inline">\(R_t\)</span>: Scalar feedback</li>
+<li>Goal of Agent: Maximize cumulative sum of rewards</li>
 </ul>
-<!-- -->
-<ul>
-<li><span class="math inline">\(A_\pi(s,a) = q_\pi(s,a) - v_\pi(s)\)</span></li>
-</ul>
-</section>
-<section id="bellman-equation-2" class="level4">
-<h4 class="anchored" data-anchor-id="bellman-equation-2">Bellman Equation</h4>
-<p><span class="math display">\[
-\begin{aligned}
-v_\pi(s) &amp;= E_\pi[G_t|S_t=s] \\
-&amp;= \sum\limits_a E_\pi[G_t|S_t=s, A_t=a] \cdot P(A_t=a|S_t=s) \\
-&amp;= \sum\limits_a \pi(a|s) E_\pi[R_{t+1} + \gamma G_{t+1}|S_t=s, A_t=a] \\
-&amp;= \sum\limits_a \pi(a|s) E_\pi[R_{t+1} + \gamma G_{t+1}|S_t=s, A_t=a, R{t+1}=r, S_{t+1}=s'] \\ &amp;\qquad\qquad\qquad\cdot P(S_{t+1}=s', R_{t+1} = r|S_t=s, A_t=a) \\
-&amp;= \sum\limits_a \pi(a|s) \sum\limits_{s',r} p(s',r|s,a) \left[r + \gamma E_\pi[G_{t+1}|S_{t+1}=s']\right] \\
-&amp;= \sum\limits_a \pi(a|s) \sum\limits_{s',r}\left[rp(s',r|s,a) + \gamma E_\pi[G_{t+1}|S_{t+1}=s']\cdot p(s',r|s,a)\right] \\
-&amp;= \sum\limits_a \pi(a|s) \left[ R^a_s + \gamma\sum\limits_{s',r}p(s',r|s,a)v\pi(s') \right] \\
-&amp;= \sum\limits_a \pi(a|s) \left[r+\gamma\sum\limits_{s'}P^a_{ss'}v_\pi(s')\right] \\
-&amp;= \sum\limits_a \pi(a|s) E[R_{t+1} + \gamma v_\pi(S_{t+1})|S_t=s,A_t=a] \\
-&amp;= E[R_{t+1} + \gamma v_\pi(S_{t+1})|S_t=s]
-\end{aligned}
-\]</span></p>
-<p><br>
-<!-- --></p>
-<p><span class="math display">\[
-\begin{aligned}
-q_\pi(s,a) &amp;= E_\pi[G_t|S_t=s, A_t=a] \\
-&amp;= \sum\limits_{s',r} p(s',r|s,a) \left[r + \gamma E_\pi [G_{t+1} | S_{t+1}=s']\right] \\
-&amp;= \sum\limits_{s',r} p(s',r|s,a) \left[r+\gamma\sum_{a'}\pi(a'|s')q(s',a')\right] \\
-&amp;= E_\pi\left[R_{t+1} + \gamma v_\pi(S_{t+1})|S_t=s,A_t=a\right] \\
-&amp;= E\left[R_{t+1} + \gamma E_\pi\left[q_\pi(S_{t+1}, A_{t+1})|S_{t+1}=s'\right]|S_t=s, A_t=a\right] \\
-&amp;= E\left[R_{t+1} + \gamma q_\pi(S_{t+1}, A_{t+1})|S_t=s, A_t=a\right]
-\end{aligned}
-\]</span></p>
-</section>
-</section>
-<section id="optimal-policy" class="level3">
-<h3 class="anchored" data-anchor-id="optimal-policy">Optimal Policy</h3>
-<section id="optimal-value-functions-and-policy" class="level4">
-<h4 class="anchored" data-anchor-id="optimal-value-functions-and-policy">Optimal Value Functions and Policy</h4>
-<ul>
-<li>Optimal state-value function: <span class="math inline">\(v_*(s) = \max\limits_\pi v_\pi(s)\)</span></li>
-<li>Optimal action-value function: <span class="math inline">\(q_*(s,a) = \max\limits_\pi q_\pi(s,a)\)</span></li>
-</ul>
-<div class="callout callout-style-default callout-important callout-titled" title="Theorem">
+<div class="callout callout-style-default callout-note callout-titled" title="Reward Hypothesis">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Important</span>Theorem
+<span class="screen-reader-only">Note</span>Reward Hypothesis
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>If <span class="math inline">\(\pi' \ge \pi\)</span>, <span class="math inline">\(v_{\pi'}(s) \ge v_\pi(s)\)</span> for all <span class="math inline">\(s\)</span></p>
-<p>Optimal policy <span class="math inline">\(\pi_* \ge \pi\)</span> for all <span class="math inline">\(\pi\)</span></p>
-<p><span class="math inline">\(v_{\pi_*}(s) = v_*(s)\)</span>, <span class="math inline">\(q_{\pi_*}(s,a) = q_*(s,a)\)</span></p>
+<p>All goals can be described by the maximization of the expected value of the cumulative sum of rewards.</p>
 </div>
 </div>
 </section>
-<section id="finding-an-optimal-policy" class="level4">
-<h4 class="anchored" data-anchor-id="finding-an-optimal-policy">Finding an Optimal Policy</h4>
+<section id="type-of-reward" class="level3">
+<h3 class="anchored" data-anchor-id="type-of-reward">3.2 Type of Reward</h3>
+<p>If we know known dynamics <span class="math inline">\(p(s', r \mid s, a)\)</span>:</p>
+<p><strong>State Transition Probability</strong> (marginalization over reward):</p>
+<p><span class="math display">\[P_{ss'}^a = p(s' \mid s, a) = \sum_{r \in R} p(s', r \mid s, a)\]</span></p>
+<p><strong>Expected Reward for State-Action Pair</strong>:</p>
+<p><span class="math display">\[R_s^a = r(s,a) = E[R_{t+1} \mid S_t=s, A_t=a] = \sum\limits_{r \in R} r \sum_{s' \in S} p(s', r \mid s, a)\]</span></p>
+<p><strong>Expected Reward for State-Action-Next State Triple</strong>:</p>
 <p><span class="math display">\[
-\pi_*(s) = \begin{cases} 1 &amp; \text{if } a = \arg\max\limits_a q_*(s,a) \\ 0 &amp; \text{otherwise} \end{cases}
+\begin{aligned}
+R_{ss'}^a &amp;= r(s,a,s') = E[R_{t+1} \mid S_t=s, A_t=a, S_{t+1}=s'] \\
+&amp;= \frac{\sum_{r \in R} r \cdot p(s', r \mid s, a)}{p(s' \mid s, a)}
+\end{aligned}
 \]</span></p>
+</section>
+<section id="return" class="level3">
+<h3 class="anchored" data-anchor-id="return">3.3 Return</h3>
+<p><span class="math display">\[G_t = R_{t+1} + \gamma R_{t+2} + \cdots = \sum_{k=0}^{\infty} \gamma^k R_{t+k+1}\]</span></p>
+<p><strong>Why are most MDPs discounted?</strong>:</p>
 <ul>
-<li><span class="math inline">\(v_*(s) = \max\limits_a q_*(s,a)\quad \because v_\pi(s) = \sum\limits_a\pi(a|s)q_\pi(s,a)\)</span></li>
-<li><span class="math inline">\(q_*(s,a) = r(s,a) + \gamma\sum\limits_{s'}p(s'|s,a)v_*(s')=R_s^a + \gamma\sum\limits_{s'}P^a_{ss'}v_*(s')\)</span></li>
+<li>Mathematically convenient (avoids infinite return)</li>
+<li>Accounts for uncertainty (decay exponentially)</li>
+<li>Immediate rewards are more valuable than delayed rewards</li>
+<li>If all sequences terminate, an undiscounted return(<span class="math inline">\(\gamma=1\)</span>) can be used</li>
 </ul>
-<!-- -->
+</section>
+<section id="policy" class="level3">
+<h3 class="anchored" data-anchor-id="policy">3.4 Policy</h3>
 <ul>
-<li><span class="math inline">\(v_*(s)\)</span> can be obtained directly from <span class="math inline">\(q_*(s,a)\)</span></li>
-<li><span class="math inline">\(q_*(s,a)\)</span> cannot be obtained directly from <span class="math inline">\(v_*(s)\)</span>
+<li><strong>Stochastic policy</strong>: <span class="math inline">\(\pi(a \mid s) = P(A_t = a \mid S_t = s)\)</span></li>
+<li><strong>Deterministic policy</strong>: <span class="math inline">\(\pi(s) = a\)</span></li>
+</ul>
+<hr>
 <ul>
-<li>Instead, we need to know the transition probability <span class="math inline">\(p(s'|s,a)\)</span> under model-based settings.</li>
+<li>Deterministic optimal policy <span class="math inline">\(\pi_*(s)\)</span> exists in known MDP.</li>
+<li><span class="math inline">\(\epsilon\)</span>-greedy policy (stochastic) is needed in unknown MDP:
+<ul>
+<li><span class="math inline">\(1 - \epsilon\)</span>: Choose optimal action</li>
+<li><span class="math inline">\(\epsilon\)</span>: Choose random action</li>
 </ul></li>
 </ul>
-
-
 </section>
+<section id="summary-of-notations" class="level3">
+<h3 class="anchored" data-anchor-id="summary-of-notations">3.5 Summary of Notations</h3>
+<ul>
+<li><span class="math inline">\(\pi\)</span>: Policy</li>
+<li><span class="math inline">\(\pi(a \mid s)\)</span>: Stochastic policy</li>
+<li><span class="math inline">\(\pi(s)\)</span>: Deterministic policy</li>
+<li><span class="math inline">\(v_\pi(s)\)</span>: State-value function</li>
+<li><span class="math inline">\(v_*(s)\)</span>: Optimal state-value function</li>
+<li><span class="math inline">\(q_\pi(s, a)\)</span>: Action-value function</li>
+<li><span class="math inline">\(q_*(s, a)\)</span>: Optimal action-value function</li>
+</ul>
+</section>
+</section>
+<section id="value-functions" class="level2">
+<h2 class="anchored" data-anchor-id="value-functions">4. Value Functions</h2>
+<p>When following a policy <span class="math inline">\(\pi\)</span>, value functions measure the <strong>goodness</strong> of each state <span class="math inline">\(s\)</span> (or state-action pair <span class="math inline">\((s,a)\)</span>), in terms of the expectation of returns <span class="math inline">\(G_t\)</span>.</p>
+<section id="state-value-function" class="level3">
+<h3 class="anchored" data-anchor-id="state-value-function">4.1 State-Value Function</h3>
+<p><span class="math display">\[v_\pi(s) = E_\pi[G_t \mid S_t = s] = \sum_a \pi(a \mid s) q_\pi(s,a)\]</span></p>
+</section>
+<section id="action-value-function" class="level3">
+<h3 class="anchored" data-anchor-id="action-value-function">4.2 Action-Value Function</h3>
+<p><span class="math display">\[q_\pi(s, a) = E_\pi[G_t \mid S_t = s, A_t = a]\]</span></p>
+</section>
+<section id="advantage-function" class="level3">
+<h3 class="anchored" data-anchor-id="advantage-function">4.3 Advantage Function</h3>
+<p><span class="math display">\[A_\pi(s, a) = q_\pi(s, a) - v_\pi(s)\]</span></p>
+</section>
+</section>
+<section id="bellman-expectation-equation" class="level2">
+<h2 class="anchored" data-anchor-id="bellman-expectation-equation">5. Bellman Expectation Equation</h2>
+<section id="proof-state-value-function" class="level3">
+<h3 class="anchored" data-anchor-id="proof-state-value-function">5.1 Proof State-Value Function</h3>
+<p><span class="math display">\[
+\begin{aligned}
+v_\pi(s) &amp;= E_\pi[G_t \mid S_t = s] \\
+&amp;= \sum_a E_\pi[G_t \mid S_t=s, A_t=a] \cdot P(A_t=a \mid S_t=s) \\
+&amp;= \sum_a \pi(a|s) E_\pi[R_{t+1} + \gamma G_{t+1} \mid S_t=s, A_t=a] \\
+&amp;= \sum_a \pi(a|s) \sum_{s',r} p(s',r|s,a) \left[r + \gamma E_\pi[G_{t+1} \mid S_{t+1}=s']\right] \\
+&amp;= \sum_a \pi(a|s) \sum_{s',r} \left[r \cdot p(s',r|s,a) + \gamma E_\pi[G_{t+1}|S_{t+1}=s'] \cdot p(s',r|s,a)\right] \\
+&amp;= \sum_a \pi(a|s) \left[ R^a_s + \gamma \sum_{s'} P^a_{ss'} v_\pi(s') \right] \\
+&amp;= \sum_a \pi(a|s) E[R_{t+1} + \gamma v_\pi(S_{t+1}) \mid S_t=s, A_t=a] \\
+&amp;= E_\pi[R_{t+1} + \gamma v_\pi(S_{t+1}) \mid S_t = s]
+\end{aligned}
+\]</span></p>
+</section>
+<section id="precautions-for-induction" class="level3">
+<h3 class="anchored" data-anchor-id="precautions-for-induction">5.2 Precautions for induction</h3>
+<p>In the proof above, <span class="math inline">\(p(s', r| s, a)\)</span> is <strong>marginalized</strong> in two directions.</p>
+<p><strong><span class="math inline">\(r\)</span> term — marginalization for <span class="math inline">\(s'\)</span></strong>:</p>
+<p><span class="math display">\[\sum_{s',r} r \cdot p(s',r|s,a) = \sum_r r \underbrace{\sum_{s'} p(s',r|s,a)}_{=p(r|s,a)} = E[R_{t+1} \mid s,a] = R^a_s\]</span></p>
+<p><strong><span class="math inline">\(v_\pi(s')\)</span> term — marginalization for <span class="math inline">\(r\)</span></strong>:</p>
+<p><span class="math display">\[\sum_{s',r} p(s',r|s,a) \cdot v_\pi(s') = \sum_{s'} \underbrace{\sum_r p(s',r|s,a)}_{=p(s'|s,a)=P^a_{ss'}} v_\pi(s')\]</span></p>
+</section>
+<section id="marking-caution" class="level3">
+<h3 class="anchored" data-anchor-id="marking-caution">5.3 Marking caution</h3>
+<ul>
+<li><span class="math inline">\(r\)</span>: summation variable</li>
+<li><span class="math inline">\(R_{t+1}\)</span>: random variable</li>
+<li><span class="math inline">\(R^a_s\)</span> = <span class="math inline">\(E[R_{t+1} \mid s,a]\)</span></li>
+</ul>
+</section>
+<section id="proof-action-value-function" class="level3">
+<h3 class="anchored" data-anchor-id="proof-action-value-function">5.4 Proof Action-Value Function</h3>
+<p><span class="math display">\[
+\begin{aligned}
+q_\pi(s,a) &amp;= E_\pi[G_t \mid S_t=s, A_t=a] \\
+&amp;= \sum_{s',r} p(s',r|s,a)\left[r + \gamma E_\pi[G_{t+1} \mid S_{t+1}=s']\right] \\
+&amp;= \sum_{s',r} p(s',r|s,a)\left[r + \gamma \sum_{a'} \pi(a'|s') q_\pi(s',a')\right] \\
+&amp;= E[R_{t+1} + \gamma q_\pi(S_{t+1}, A_{t+1}) \mid S_t=s, A_t=a]
+\end{aligned}
+\]</span></p>
+</section>
+<section id="backup-diagram-relationship" class="level3">
+<h3 class="anchored" data-anchor-id="backup-diagram-relationship">5.5 Backup Diagram Relationship</h3>
+<p><span class="math display">\[
+\begin{aligned}
+v_\pi(s) &amp;= \sum_a \pi(a|s) q_\pi(s,a)\\
+q_\pi(s,a) &amp;= R_s^a + \gamma \sum_{s'} P_{ss'}^a v_\pi(s')\\
+v_\pi(s) &amp;= \sum_a \pi(a|s) \left[ R_s^a + \gamma \sum_{s'} P_{ss'}^a v_\pi(s') \right]\\
+q_\pi(s,a) &amp;= R_s^a + \gamma \sum_{s'} P_{ss'}^a \sum_{a'} \pi(a'|s') q_\pi(s', a')
+\end{aligned}
+\]</span></p>
+</section>
+</section>
+<section id="bellman-optimality-equation" class="level2">
+<h2 class="anchored" data-anchor-id="bellman-optimality-equation">6. Bellman Optimality Equation</h2>
+<section id="optimal-value-functions" class="level3">
+<h3 class="anchored" data-anchor-id="optimal-value-functions">6.1 Optimal Value Functions</h3>
+<p><span class="math display">\[v_*(s) = \max_\pi v_\pi(s), \qquad q_*(s,a) = \max_\pi q_\pi(s,a)\]</span></p>
+</section>
+<section id="theorem-optimal-policy-existence" class="level3">
+<h3 class="anchored" data-anchor-id="theorem-optimal-policy-existence">6.2 Theorem (Optimal Policy Existence)</h3>
+<div class="callout callout-style-default callout-note callout-titled" title="[Theorem] Any MDP satisfies the following:">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>[Theorem] Any MDP satisfies the following:
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>There exists an <strong>optimal policy</strong> <span class="math inline">\(\pi_*\)</span> such that <span class="math inline">\(\pi_* \ge \pi\)</span> for all <span class="math inline">\(\pi\)</span>.</li>
+<li>All optimal policies achieve the <strong>optimal state-value function</strong>: <span class="math inline">\(v_{\pi_*}(s) = v_*(s)\)</span></li>
+<li>All optimal policies achieve the <strong>optimal action-value function</strong>: <span class="math inline">\(q_{\pi_*} (s,a) = q_*(s,a)\)</span></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="finding-an-optimal-policy" class="level3">
+<h3 class="anchored" data-anchor-id="finding-an-optimal-policy">6.3 Finding an Optimal Policy</h3>
+<p><span class="math display">\[\pi_*(a \mid s) = \begin{cases} 1 &amp; \text{if } a = \arg\max_a q_*(s,a) \\ 0 &amp; \text{otherwise} \end{cases}\]</span></p>
+<ul>
+<li>There is always <strong>deterministic optimal policy</strong> for any MDP.</li>
+<li>If we find <span class="math inline">\(q_*(s,a)\)</span>, we immediately have the policy: <span class="math inline">\(\pi_*(s) = \arg\max_a q_*(s,a)\)</span></li>
+</ul>
+</section>
+<section id="important-formulas" class="level3">
+<h3 class="anchored" data-anchor-id="important-formulas">6.4 Important formulas</h3>
+<p><span class="math display">\[v_*(s) = \max_a q_*(s,a) \quad \because v_\pi(s) = \sum_a \pi(a|s) q_\pi(s,a)\]</span></p>
+<p><span class="math display">\[q_*(s,a) = r(s,a) + \gamma \sum_{s'} p(s'|s,a) v_*(s') = R_s^a + \gamma \sum_{s'} P^a_{ss'} v_*(s')\]</span></p>
+<p><strong>Important asymmetry</strong>:</p>
+<ul>
+<li><span class="math inline">\(v_*(s)\)</span> <strong>can be obtained directly</strong> from <span class="math inline">\(q_*(s,a)\)</span>.</li>
+<li><span class="math inline">\(q_*(s,a)\)</span> <strong>cannot be obtained directly</strong> from <span class="math inline">\(v_*(s)\)</span>.
+<ul>
+<li>Model-based setting: Need to know the <strong>transition probability</strong> <span class="math inline">\(p(s'|s,a)\)</span></li>
+<li>Model-free setting: Directly compute <span class="math inline">\(Q(s,a)\)</span></li>
+</ul></li>
+</ul>
+</section>
+<section id="bellman-optimality-equation-1" class="level3">
+<h3 class="anchored" data-anchor-id="bellman-optimality-equation-1">6.5 Bellman Optimality Equation</h3>
+<p><span class="math display">\[v_*(s) = \max_a \sum_{s',r} p(s',r \mid s,a)\left[r + \gamma v_*(s')\right]\]</span></p>
+<p><span class="math display">\[q_*(s,a) = R_s^a + \gamma \sum_{s'} P_{ss'}^a \max_{a'} q_*(s', a')\]</span></p>
+
+
 </section>
 </section>
 

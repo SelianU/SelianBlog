@@ -10,7 +10,7 @@
 <meta name="dcterms.date" content="2026-04-14">
 <meta name="description" content="Dynamic Programming, Reinforcement Learning">
 
-<title>Reinforcement Learning 2 – SelianBlog</title>
+<title>DP &amp; RL – SelianBlog</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -137,9 +137,9 @@ window.Quarto = {
 </script>
 
 <link rel="stylesheet" href="../../styles.css">
-<meta property="og:title" content="Reinforcement Learning 2 – SelianBlog">
+<meta property="og:title" content="DP &amp; RL – SelianBlog">
 <meta property="og:description" content="Dynamic Programming, Reinforcement Learning">
-<meta property="og:image" content="https://selianu.github.io/SelianBlog/posts/Reinforcement Learning 2/GPI.png">
+<meta property="og:image" content="https://selianu.github.io/SelianBlog/posts/DP &amp; RL/GPI.png">
 <meta property="og:site_name" content="SelianBlog">
 <meta property="og:image:height" content="574">
 <meta property="og:image:width" content="1691">
@@ -197,16 +197,22 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#dynamic-programming" id="toc-dynamic-programming" class="nav-link active" data-scroll-target="#dynamic-programming">Dynamic Programming</a>
+  <li><a href="#dynamic-programming" id="toc-dynamic-programming" class="nav-link active" data-scroll-target="#dynamic-programming">1. Dynamic Programming</a>
   <ul class="collapse">
-  <li><a href="#value-iteration" id="toc-value-iteration" class="nav-link" data-scroll-target="#value-iteration">Value Iteration</a></li>
-  <li><a href="#policy-iteration" id="toc-policy-iteration" class="nav-link" data-scroll-target="#policy-iteration">Policy Iteration</a></li>
-  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
+  <li><a href="#two-main-approaches" id="toc-two-main-approaches" class="nav-link" data-scroll-target="#two-main-approaches">1.1 Two main approaches</a></li>
+  <li><a href="#value-iteration" id="toc-value-iteration" class="nav-link" data-scroll-target="#value-iteration">1.2 Value Iteration</a></li>
+  <li><a href="#policy-iteration" id="toc-policy-iteration" class="nav-link" data-scroll-target="#policy-iteration">1.3 Policy Iteration</a></li>
+  <li><a href="#value-iteration-vs-policy-iteration" id="toc-value-iteration-vs-policy-iteration" class="nav-link" data-scroll-target="#value-iteration-vs-policy-iteration">1.4 Value Iteration vs Policy Iteration</a></li>
+  <li><a href="#dp-summary" id="toc-dp-summary" class="nav-link" data-scroll-target="#dp-summary">1.5 DP Summary</a></li>
   </ul></li>
-  <li><a href="#reinforcement-learning" id="toc-reinforcement-learning" class="nav-link" data-scroll-target="#reinforcement-learning">Reinforcement Learning</a>
+  <li><a href="#reinforcement-learning" id="toc-reinforcement-learning" class="nav-link" data-scroll-target="#reinforcement-learning">2. Reinforcement Learning</a>
   <ul class="collapse">
-  <li><a href="#reinforcement-learning-1" id="toc-reinforcement-learning-1" class="nav-link" data-scroll-target="#reinforcement-learning-1">Reinforcement Learning</a></li>
-  <li><a href="#monte-carlo-methods" id="toc-monte-carlo-methods" class="nav-link" data-scroll-target="#monte-carlo-methods">Monte Carlo Methods</a></li>
+  <li><a href="#dp-vs-rl" id="toc-dp-vs-rl" class="nav-link" data-scroll-target="#dp-vs-rl">2.1 DP vs RL</a></li>
+  <li><a href="#generalized-policy-iteration-gpi" id="toc-generalized-policy-iteration-gpi" class="nav-link" data-scroll-target="#generalized-policy-iteration-gpi">2.2 Generalized Policy Iteration (GPI)</a></li>
+  <li><a href="#monte-carlo-methods" id="toc-monte-carlo-methods" class="nav-link" data-scroll-target="#monte-carlo-methods">2.3 Monte Carlo Methods</a></li>
+  <li><a href="#exploitation-vs-exploration" id="toc-exploitation-vs-exploration" class="nav-link" data-scroll-target="#exploitation-vs-exploration">2.4 Exploitation vs Exploration</a></li>
+  <li><a href="#mc-control-epsilon-greedy-policy-improvement" id="toc-mc-control-epsilon-greedy-policy-improvement" class="nav-link" data-scroll-target="#mc-control-epsilon-greedy-policy-improvement">2.5 MC Control (<span class="math inline">\(\epsilon\)</span>-Greedy Policy Improvement)</a></li>
+  <li><a href="#glie-greedy-in-the-limit-with-infinite-exploration" id="toc-glie-greedy-in-the-limit-with-infinite-exploration" class="nav-link" data-scroll-target="#glie-greedy-in-the-limit-with-infinite-exploration">2.6 GLIE (Greedy in the Limit with Infinite Exploration)</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -216,7 +222,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Reinforcement Learning 2</h1>
+<h1 class="title">DP &amp; RL</h1>
   <div class="quarto-categories">
     <div class="quarto-category">RL</div>
   </div>
@@ -254,100 +260,89 @@ window.Quarto = {
 
 
 <section id="dynamic-programming" class="level2">
-<h2 class="anchored" data-anchor-id="dynamic-programming">Dynamic Programming</h2>
-<p>Method for solving Markov Decision Processes (MDPs)</p>
+<h2 class="anchored" data-anchor-id="dynamic-programming">1. Dynamic Programming</h2>
+<p>Method for solving Markov Decision Processes (MDPs).</p>
+<p><strong>DP assumes</strong>:</p>
 <ul>
-<li>DP assumes
-<ul>
-<li>Model-based</li>
+<li>Model-based (known MDP): transition probabilities and rewards are given</li>
 <li>The Markov property</li>
-</ul></li>
 </ul>
-<!-- -->
-<ul>
-<li>DP uses the Bellman equation to iteratively update value functions.</li>
-</ul>
-<!-- -->
-<ul>
-<li>Goal
+<p><strong>DP uses the Bellman equation</strong> to iteratively update value functions.</p>
+<p><strong>Goal</strong>:</p>
 <ul>
 <li>Compute the optimal value function</li>
 <li>Derive the optimal policy</li>
-</ul></li>
 </ul>
-<!-- -->
-<p>Two main approach</p>
+<section id="two-main-approaches" class="level3">
+<h3 class="anchored" data-anchor-id="two-main-approaches">1.1 Two main approaches</h3>
 <ul>
-<li><strong>Value-based approach</strong>
-<ul>
-<li>Directly update value functions</li>
-<li>Leads to <strong>Value Iteration</strong></li>
-</ul></li>
-<li><strong>Policy-based approach</strong>
-<ul>
-<li>Evaluate and improve policies</li>
-<li>Leads to <strong>Policy Iteration</strong></li>
-</ul></li>
+<li><strong>Value-based approach</strong>: Directly update value functions → <strong>Value Iteration</strong></li>
+<li><strong>Policy-based approach</strong>: Evaluate and improve policies → <strong>Policy Iteration</strong></li>
 </ul>
-<section id="value-iteration" class="level3">
-<h3 class="anchored" data-anchor-id="value-iteration">Value Iteration</h3>
-<p><strong>Bellman Optimality Equation</strong> <span class="math display">\[v_*(s) = \max\limits_a\sum\limits_{s',r}p(s',r|s,a)[r+\gamma v_*(s')]\]</span></p>
-<section id="value-iteration-procedure" class="level4">
-<h4 class="anchored" data-anchor-id="value-iteration-procedure">Value Iteration Procedure</h4>
-<p><span class="math display">\[V_{k+1}(s)\leftarrow\max\limits_a\sum\limits_{s',r} p(s',r|s,a)[r+\gamma V_k(s')]\]</span></p>
-<p><strong>Initialize <span class="math inline">\(\rightarrow\)</span> Update <span class="math inline">\(\rightarrow\)</span> Compute the Optimal Policy</strong></p>
-<p>Disadvantages 1. Policy often converges long before the values converge: values rarely changes 2. Slow: <span class="math inline">\(O(S^2A)\)</span> per iteration and needs many iterations to converge.</p>
-<p>Convergence - <span class="math inline">\(\epsilon: \lvert V_{k+1}(s) - V_{k}(s) \rvert &lt; \epsilon\)</span> for all <span class="math inline">\(s\)</span></p>
+<hr>
 </section>
-<section id="value-iteration-pseudo-code" class="level4">
-<h4 class="anchored" data-anchor-id="value-iteration-pseudo-code">Value Iteration Pseudo Code</h4>
-<div id="algo-value-iteration" class="pseudocode-container quarto-float" data-line-number-punc=":" data-indent-lines="false" data-pseudocode-number="1" data-no-end="false" data-comment-delimiter="//" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number="true">
+<section id="value-iteration" class="level3">
+<h3 class="anchored" data-anchor-id="value-iteration">1.2 Value Iteration</h3>
+<p>Based on <strong>Bellman Optimality Equation</strong>:</p>
+<p><span class="math display">\[v_*(s) = \max_a \sum_{s',r} p(s',r|s,a)[r + \gamma v_*(s')]\]</span></p>
+<section id="procedure" class="level4">
+<h4 class="anchored" data-anchor-id="procedure">Procedure</h4>
+<p><span class="math display">\[V_{k+1}(s) \leftarrow \max_a \sum_{s',r} p(s',r|s,a)[r + \gamma V_k(s')]\]</span></p>
+<p><strong>Initialize → Update → Compute the Optimal Policy</strong></p>
+<ol type="1">
+<li>Initialize <span class="math inline">\(V_0(s) = 0\)</span> for all states (or arbitrarily)</li>
+<li>Iteratively update <span class="math inline">\(V_{k+1}(s)\)</span> from <span class="math inline">\(V_k(s')\)</span> (full backup) until convergence
+<ul>
+<li><strong>Synchronous</strong>: Update at once after calculate <span class="math inline">\(V_{k+1}\)</span> for all <span class="math inline">\(s\)</span></li>
+<li><strong>Asynchronous</strong>: Update immediately after calculate <span class="math inline">\(V_{k+1}\)</span></li>
+</ul></li>
+<li>Extract the optimal policy with one-step lookahead after convergence:</li>
+</ol>
+<p><span class="math display">\[\pi^*(s) = \arg\max_a \sum_{s',r} p(s',r|s,a)[r + \gamma V^*(s')]\]</span></p>
+<p><strong>Convergence</strong>: <span class="math inline">\(|V_{k+1}(s) - V_k(s)| &lt; \epsilon\)</span> for all <span class="math inline">\(s\)</span></p>
+</section>
+<section id="disadvantages" class="level4">
+<h4 class="anchored" data-anchor-id="disadvantages">Disadvantages</h4>
+<ol type="1">
+<li>Policy often converges long before the values converge — Repeat unnecessary iterations while the value converges below <span class="math inline">\(\epsilon\)</span>, even if the policy is already optimal.</li>
+<li>Slow: <span class="math inline">\(O(S^2 A)\)</span> per iteration, needs many iterations to converge.</li>
+</ol>
+</section>
+<section id="pseudo-code" class="level4">
+<h4 class="anchored" data-anchor-id="pseudo-code">Pseudo Code</h4>
+<div id="algo-value-iteration" class="pseudocode-container quarto-float" data-line-number-punc=":" data-caption-prefix="Algorithm" data-line-number="true" data-pseudocode-number="1" data-indent-lines="false" data-comment-delimiter="//" data-indent-size="1.2em" data-no-end="false">
 <div class="pseudocode">
-\begin{algorithm} \caption{Value Iteration for estimating $\pi \approx \pi_*$} \begin{algorithmic} \State \textbf{Hyperparameter:} small threshold $\epsilon &gt; 0$ for the convergence check \State Initialize $V(s)$ arbitrarily for all $s \in \mathcal{S}$, except $V(\text{terminal}) = 0$ \Repeat \State $\Delta \gets 0$ \For{each $s \in \mathcal{S}$} \State $v \gets V(s)$ \State $V(s) \gets \max_{a} \sum_{s', r} p(s', r \mid s, a) [r + \gamma V(s')]$ \State $\Delta \gets \max(\Delta, |v - V(s)|)$ \EndFor \Until{$\Delta &lt; \epsilon$} \State \textbf{Output} a deterministic policy $\pi \approx \pi_*$ such that \State $\pi(s) = \arg\max_{a} \sum_{s', r} p(s', r \mid s, a) [r + \gamma V(s')]$ \end{algorithmic} \end{algorithm}
+\begin{algorithm} \caption{Value Iteration for estimating $\pi \approx \pi_*$} \begin{algorithmic} \State $\mathbf{Hyperparameter}$: small threshold $\epsilon &gt; 0$ for convergence check \State Initialize $V(s)$ arbitrarily for all $s\in \mathcal{S}$, except $V(\text{terminal}) = 0$ \State \Repeat \State $\Delta\gets0$ \For{each $s\in\mathcal{S}$} \State $v\gets V(s)$ \State $V(s)\gets\max_a\sum+{s',r} p(s',r|s,a) [r+\gamma V(s')]$ \State $\Delta\gets\max(\Delta,|v-V(s)|)$ \EndFor \Until{$\Delta&lt;\epsilon$} \State \State $\mathbf{Output}$: deterministic policy $\pi\approx\pi^*$ such that \State $\pi(s) = \arg\max_a \sum_{s',r} p(s',r|s,a) [r + \gamma V(s')]$ \end{algorithmic} \end{algorithm}
 </div>
 </div>
 </section>
 </section>
 <section id="policy-iteration" class="level3">
-<h3 class="anchored" data-anchor-id="policy-iteration">Policy Iteration</h3>
-<section id="policy-iteration-procedure" class="level4">
-<h4 class="anchored" data-anchor-id="policy-iteration-procedure">Policy Iteration Procedure</h4>
-<ol type="1">
-<li><strong>Policy Evaluation</strong>
+<h3 class="anchored" data-anchor-id="policy-iteration">1.3 Policy Iteration</h3>
+<p>Repeats <strong>Policy Evaluation</strong> and <strong>Policy Improvement</strong> until convergence, and if <strong>the policy does not change, exit immediately</strong>.</p>
+<p><span class="math display">\[\pi_0 \xrightarrow{PE} V^{\pi_0} \xrightarrow{PI} \pi_1 \xrightarrow{PE} V^{\pi_1} \xrightarrow{PI} \cdots \to \pi_* \to V^*\]</span></p>
+<section id="policy-evaluation" class="level4">
+<h4 class="anchored" data-anchor-id="policy-evaluation">Policy Evaluation</h4>
+<p>Compute <span class="math inline">\(V^\pi\)</span> from the deterministic policy <span class="math inline">\(\pi\)</span>:</p>
+<p><span class="math display">\[V_{k+1}(s) \leftarrow \sum_{s',r} p(s',r|s,\pi(s))[r + \gamma V_k(s')]\]</span></p>
 <ul>
-<li>Compute <span class="math inline">\(V^\pi\)</span> from the deterministic policy <span class="math inline">\(\pi\)</span></li>
-<li><span class="math display">\[V_{k+1}(s)\leftarrow\sum\limits_{s',r} p(s',r|s,\pi(s)) [r+\gamma V_k(s')]\]</span></li>
+<li>Fixed action <span class="math inline">\(\rightarrow\)</span> <span class="math inline">\(O(S^2)\)</span> / iteration</li>
+<li>Update until <span class="math inline">\(|V_{k+1}(s) - V_k(s)| &lt; \epsilon\)</span></li>
 </ul>
-<ol type="1">
-<li>Initialize <span class="math inline">\(V_0(s)=0\)</span> for all states <span class="math inline">\(s\)</span>.</li>
-<li>Update <span class="math inline">\(V_{k+1}(s)\)</span> from all <span class="math inline">\(V_k(s')\)</span> (full backup) <span class="math inline">\(\rightarrow\)</span> until convergence to <span class="math inline">\(V^\pi(s)\)</span></li>
-</ol></li>
-<li><strong>Policy Improvement</strong>
-<ul>
-<li>Improve policy <span class="math inline">\(\pi\)</span> to <span class="math inline">\(\pi'\)</span> using a greedy policy based on <span class="math inline">\(V^\pi\)</span></li>
-<li><span class="math display">\[\pi'(s) = \arg\max\limits_a\sum\limits_{s',r} p(s',r|s,a) [r+\gamma V^\pi(s')] = \arg\max\limits_a Q^\pi(s,a)\]</span></li>
-</ul></li>
-</ol>
-</section>
-<section id="value-vs-policy-iteration" class="level4">
-<h4 class="anchored" data-anchor-id="value-vs-policy-iteration">Value vs Policy Iteration</h4>
-<ul>
-<li>In Value Iteration, <span class="math inline">\(\pi_*\)</span> is computed at the end using <span class="math inline">\(V^*\)</span>.</li>
-<li>In Policy Iteration, improvement is done at every step.</li>
-</ul>
-<p><strong>Comparison to Value Iteration</strong> - Fewer iterations are needed to reach the optimal policy. - Faster convergence because the value update is based on a fixed policy.</p>
-<!-- -->
-<ul>
-<li>Since <span class="math inline">\(Q^\pi(s,\pi'(s))\ge V^\pi(s) = \sum\limits_a\pi(a|s) Q^\pi(s,a)\)</span>, always either
-<ol type="1">
-<li><span class="math inline">\(\pi'\)</span> is strictly better than <span class="math inline">\(\pi\)</span>, or</li>
-<li><span class="math inline">\(\pi'\)</span> is optimal when <span class="math inline">\(\pi=\pi'\)</span></li>
-</ol></li>
-</ul>
-<p><span class="math inline">\(\Rightarrow\)</span> Policy Improvement Theorem</p>
 </section>
 <section id="policy-improvement" class="level4">
 <h4 class="anchored" data-anchor-id="policy-improvement">Policy Improvement</h4>
+<p>Improve policy <span class="math inline">\(\pi\)</span> to <span class="math inline">\(\pi'\)</span> using a <strong>greedy policy</strong> based on <span class="math inline">\(V^\pi\)</span>:</p>
+<p><span class="math display">\[\pi'(s) = \arg\max_a \sum_{s',r} p(s',r|s,a)[r + \gamma V^\pi(s')] = \arg\max_a Q^\pi(s,a)\]</span></p>
+<p>Since <span class="math inline">\(Q^\pi(s, \pi'(s)) \geq V^\pi(s) = \sum_a \pi(a|s) Q^\pi(s,a)\)</span>, always either:</p>
+<ol type="1">
+<li><span class="math inline">\(\pi'\)</span> is strictly better than <span class="math inline">\(\pi\)</span>, or</li>
+<li><span class="math inline">\(\pi'\)</span> is optimal when <span class="math inline">\(\pi = \pi'\)</span></li>
+</ol>
+<p>→ <strong>Policy Improvement Theorem</strong></p>
+</section>
+<section id="policy-improvement-theorem" class="level4">
+<h4 class="anchored" data-anchor-id="policy-improvement-theorem">Policy Improvement Theorem</h4>
 <div class="callout callout-style-default callout-important callout-titled" title="Policy Improvement Theorem">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -358,196 +353,309 @@ window.Quarto = {
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Let <span class="math inline">\(\pi\)</span> and <span class="math inline">\(\pi'\)</span> be two policies.</p>
-<p>If <span class="math inline">\(Q^\pi(s,\pi'(s))\ge V^\pi(s)\)</span> for all <span class="math inline">\(s\in S\)</span>, <span class="math inline">\(V^{\pi'}(s)\ge V^\pi(s)\)</span> for all <span class="math inline">\(s\in S\)</span>.</p>
-<p>This implies that <span class="math inline">\(\pi'\)</span> is better policy than <span class="math inline">\(\pi\)</span>.</p>
+<p>Let <span class="math inline">\(\pi\)</span> and <span class="math inline">\(\pi'\)</span> be two policies. If <span class="math inline">\(Q^\pi(s, \pi'(s)) \geq V^\pi(s)\)</span> for all <span class="math inline">\(s \in S\)</span>, then <span class="math inline">\(V^{\pi'}(s) \geq V^\pi(s)\)</span> for all <span class="math inline">\(s \in S\)</span>. This implies that <span class="math inline">\(\pi'\)</span> is a better policy than <span class="math inline">\(\pi\)</span>.</p>
 </div>
 </div>
+<p><strong>Proof</strong>:</p>
 <p><span class="math display">\[
 \begin{aligned}
-v_\pi(s) &amp;\le q_\pi(s,\pi'(s))\\
-&amp;=\mathbb{E}[R_{t+1}+\gamma v_\pi(S_{t+1})|S_t=s,A_t=\pi'(s)]\\
-&amp;=\mathbb{E}_{\pi'}[R_{t+1}+\gamma v_\pi(S_{t+1})|S_t=s]\\
-&amp;\le\mathbb{E}_{\pi'}[R_{t+1}+\gamma q_\pi(S_{t+1},\pi'(S_{t+1}))|S_t=s]\\
-&amp;=\mathbb{E}_{\pi'}[R_{t+1}+\gamma \mathbb{E}_{\pi'}[R_{t+2}+\gamma v_{\pi}(S_{t+2})|S_{t+1}, A_{t+1}=\pi'(S_{t+1})]|S_t=s]\\
-&amp;=\mathbb{E}_{\pi'}[R_{t+1}+\gamma R_{t+2}+\gamma^2v_\pi(S_{t+2})|S_t=s]\\
-&amp;\ \ \vdots\\
-&amp;\le\mathbb{E}_{\pi'}[R_{t+1}+\gamma R_{t+2}+\gamma^2 R_{t+3}+\cdots|S_t=s]\\
-&amp;=v_{\pi'}(s)
+v_\pi(s) &amp;\leq q_\pi(s, \pi'(s)) \\
+&amp;= \mathbb{E}[R_{t+1} + \gamma v_\pi(S_{t+1}) \mid S_t=s, A_t=\pi'(s)] \\
+&amp;= \mathbb{E}_{\pi'}[R_{t+1} + \gamma v_\pi(S_{t+1}) \mid S_t=s] \\
+&amp;\leq \mathbb{E}_{\pi'}[R_{t+1} + \gamma q_\pi(S_{t+1}, \pi'(S_{t+1})) \mid S_t=s] \\
+&amp;= \mathbb{E}_{\pi'}[R_{t+1} + \gamma \mathbb{E}_{\pi'}[R_{t+2} + \gamma v_\pi(S_{t+2}) \mid S_{t+1}, A_{t+1}=\pi'(S_{t+1})] \mid S_t=s] \\
+&amp;= \mathbb{E}_{\pi'}[R_{t+1} + \gamma R_{t+2} + \gamma^2 v_\pi(S_{t+2}) \mid S_t=s] \\
+&amp;\leq \mathbb{E}_{\pi'}[R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + \gamma^3 v_\pi(S_{t+3}) \mid S_t=s] \\
+&amp;\ \ \vdots \\
+&amp;\leq \mathbb{E}_{\pi'}[R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + \cdots \mid S_t=s] \\
+&amp;= v_{\pi'}(s)
 \end{aligned}
 \]</span></p>
 </section>
-<section id="policy-iteration-1" class="level4">
-<h4 class="anchored" data-anchor-id="policy-iteration-1">Policy Iteration</h4>
-<p><span class="math display">\[\pi_0 \rightarrow \text{policy evaluation} \rightarrow V^{\pi_0} \rightarrow \text{policy improvement} \rightarrow \pi_1 \rightarrow \cdots \rightarrow \pi_* \rightarrow V^*\]</span> - A <strong>finite MDP</strong> has finitely many policies, so this process converges to an <strong>optimal policy</strong> and an optimal value function in <strong>finite iterations</strong>. - If <span class="math inline">\(\pi'\)</span> is as good as, but not better than <span class="math inline">\(\pi\)</span>, then <span class="math inline">\(v_\pi=v_{\pi'}\)</span> and satisfies Bellman optimality equation - <span class="math display">\[v_{\pi'}(s)=\max\limits_a\sum\limits_{s',r}p(s',r|s,a) [r+\gamma v_{\pi'}(s')]\]</span> - Thus, <span class="math inline">\(\pi'\)</span> is optimal.</p>
+<section id="converge" class="level4">
+<h4 class="anchored" data-anchor-id="converge">Converge</h4>
+<p>A <strong>finite MDP</strong> has finitely many policies <span class="math inline">\(\rightarrow\)</span> Converge to optimal policy in finite iterations.</p>
+<p>If <span class="math inline">\(\pi' = \pi\)</span>, <span class="math inline">\(v_\pi = v_{\pi'}\)</span>:</p>
+<p><span class="math display">\[v_{\pi'}(s) = \max_a \sum_{s',r} p(s',r|s,a)[r + \gamma v_{\pi'}(s')]\]</span></p>
+<p><span class="math inline">\(\rightarrow\)</span> Satisfy bellman optimality equation <span class="math inline">\(\rightarrow\)</span> <span class="math inline">\(\pi'\)</span> is optimal.</p>
 </section>
-<section id="pseudo-code" class="level4">
-<h4 class="anchored" data-anchor-id="pseudo-code">Pseudo Code</h4>
-<div id="algo-policy-iteration" class="pseudocode-container quarto-float" data-line-number-punc=":" data-indent-lines="false" data-pseudocode-number="2" data-no-end="false" data-comment-delimiter="//" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number="true">
+<section id="pseudo-code-1" class="level4">
+<h4 class="anchored" data-anchor-id="pseudo-code-1">Pseudo Code</h4>
+<div id="algo-policy-iteration" class="pseudocode-container quarto-float" data-line-number-punc=":" data-caption-prefix="Algorithm" data-line-number="true" data-pseudocode-number="2" data-indent-lines="false" data-comment-delimiter="//" data-indent-size="1.2em" data-no-end="false">
 <div class="pseudocode">
-\begin{algorithm} \caption{Policy Iteration for estimating $\pi \approx \pi_*$} \begin{algorithmic} \State \textbf{1. Initialization} \State $V(s) \in \mathbb{R}$ and $\pi(s) \in \mathcal{A}(s)$ arbitrarily for all $s \in \mathcal{S}$ \State \State \textbf{2. Policy Evaluation} \Repeat \State $\Delta \gets 0$ \For{each $s \in \mathcal{S}$} \State $v \gets V(s)$ \State $V(s) \gets \sum_{s', r} p(s', r \mid s, \pi(s)) [r + \gamma V(s')]$ \State $\Delta \gets \max(\Delta, |v - V(s)|)$ \EndFor \Until{$\Delta &lt; \epsilon$} \State \State \textbf{3. Policy Improvement} \State $policy-stable \gets \text{true}$ \For{each $s \in \mathcal{S}$} \State $old-action \gets \pi(s)$ \State $\pi(s) \gets \arg\max_{a} \sum_{s', r} p(s', r \mid s, a) [r + \gamma V(s')]$ \If{$old-action \neq \pi(s)$} \State $policy-stable \gets \text{false}$ \EndIf \EndFor \State \If{$policy-stable$} \State \textbf{stop} and return $V \approx v_*$ and $\pi \approx \pi_*$ \Else \State \textbf{go to 2} \EndIf \end{algorithmic} \end{algorithm}
+\begin{algorithm} \caption{Policy Iteration for estimating $\pi \approx \pi_*$} \begin{algorithmic} \State $\textbf{1. Initialization}$ \State $V(s) \in \mathbb{R}$ and $\pi(s) \in \mathcal{A}(s)$ arbitratily for all $s \in \mathcal{S}$ \State \State $\textbf{2. Policy Evaluation}$ \Repeat \State $\Delta \gets 0$ \For{each $s \in \mathcal{S}$} \State $v \gets V(s)$ \State $V(s) \gets \sum\limits_{s',r} p(s',r|s,\pi(s)) [r + \gamma V(s')]$ \State $\Delta \gets \max(\Delta, |v - V(s)|)$ \EndFor \Until{$\Delta&lt;\epsilon$} \State \State $\textbf{3. Policy Improvement}$ \State $policy-stable$ $\gets$ true \For{each $s \in \mathcal{S}$} \State $old-action \gets \pi(s)$ \State $\pi(s) \gets \arg\max\limits_a \sum\limits_{s',r} p(s',r|s,a) [r + \gamma V(s')]$ \If{$old-action \neq \pi(s)$} \State $policy-stable \gets$ false \EndIf \EndFor \State \If{$policy-stable$} \State stop and return $V \approx v_*$ and $\pi\approx\pi_*$ \Else \State $\textbf{go to 2}$ \EndIf \end{algorithmic} \end{algorithm}
 </div>
 </div>
 </section>
 </section>
-<section id="summary" class="level3">
-<h3 class="anchored" data-anchor-id="summary">Summary</h3>
-<p>Finding an optimal policy by solving Bellman optimality equation requires</p>
+<section id="value-iteration-vs-policy-iteration" class="level3">
+<h3 class="anchored" data-anchor-id="value-iteration-vs-policy-iteration">1.4 Value Iteration vs Policy Iteration</h3>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th>Value Iteration</th>
+<th>Policy Iteration</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Base Equation</td>
+<td>Bellman Optimality</td>
+<td>Bellman Expectation</td>
+</tr>
+<tr class="even">
+<td>O/iteration</td>
+<td><span class="math inline">\(O(S^2 A)\)</span></td>
+<td><span class="math inline">\(O(S^2)\)</span> (PE)</td>
+</tr>
+<tr class="odd">
+<td>Terminate Condition</td>
+<td><span class="math inline">\(\|V_{k+1}-V_k\| &lt; \epsilon\)</span></td>
+<td><span class="math inline">\(\pi' = \pi\)</span></td>
+</tr>
+<tr class="even">
+<td>Extract Policy</td>
+<td>Once after Converge</td>
+<td>each step</td>
+</tr>
+<tr class="odd">
+<td>Converge Speed</td>
+<td>Slow</td>
+<td>Fast</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Reason why Policy Iteration is Fast</strong>: The amount of computation in one implementation step itself is the same as the max operation in Value Iteration. However, <strong>Terminate Condition</strong> is different - Value Iteration rotates until the value converges below <span class="math inline">\(\epsilon\)</span>, while Policy Iteration stops immediately if the policy does not change. Policy converges much earlier than value, so it benefits from the total number of iteration.</p>
+</section>
+<section id="dp-summary" class="level3">
+<h3 class="anchored" data-anchor-id="dp-summary">1.5 DP Summary</h3>
+<p>Finding an optimal policy by solving Bellman optimality equation requires:</p>
 <ul>
 <li><strong>Markov property</strong></li>
 <li><strong>Accurate knowledge</strong> of environment dynamics (known MDP)</li>
 <li><strong>Enough space and time</strong> to do the computation</li>
 </ul>
-<p><strong>Dynamic Programming</strong></p>
+<p><strong>Dynamic Programming 특징</strong>:</p>
 <ul>
-<li>Under <strong>model-based</strong>, each iteration updates <strong>every value function</strong> in the table using <strong>full backup</strong> <span class="math inline">\(\rightarrow\)</span> effective for <strong>medium-sized</strong> problems</li>
-<li>Usually evaluate <span class="math inline">\(V(s)\)</span> instead of <span class="math inline">\(Q(s,a)\)</span> because <span class="math inline">\(|s| \ll |(s,a)|\)</span></li>
-<li>For large problems, DP suffers from the <strong>curse of dimensionality</strong>:
+<li>Under <strong>model-based</strong>, each iteration updates <strong>every value function</strong> using <strong>full backup</strong> <span class="math inline">\(\rightarrow\)</span> <strong>effective for medium-sized problems</strong></li>
+<li>Usually evaluate <span class="math inline">\(V(s)\)</span> instead of <span class="math inline">\(Q(s,a)\)</span> because <span class="math inline">\(|S| \ll |(S,A)|\)</span></li>
+<li>For large problems, DP suffers from the <strong>curse of dimensionality</strong>
 <ul>
-<li>The number of states grows exponentially with the number of state variables</li>
+<li>“The number of states grows exponentially with the number of state variables.”</li>
 </ul></li>
 </ul>
 </section>
 </section>
 <section id="reinforcement-learning" class="level2">
-<h2 class="anchored" data-anchor-id="reinforcement-learning">Reinforcement Learning</h2>
-<section id="reinforcement-learning-1" class="level3">
-<h3 class="anchored" data-anchor-id="reinforcement-learning-1">Reinforcement Learning</h3>
-<section id="dp-vs-rl" class="level4">
-<h4 class="anchored" data-anchor-id="dp-vs-rl">DP vs RL</h4>
+<h2 class="anchored" data-anchor-id="reinforcement-learning">2. Reinforcement Learning</h2>
+<section id="dp-vs-rl" class="level3">
+<h3 class="anchored" data-anchor-id="dp-vs-rl">2.1 DP vs RL</h3>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th>Dynamic Programming</th>
+<th>Reinforcement Learning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Setting</td>
+<td>Model-based</td>
+<td>Model-free</td>
+</tr>
+<tr class="even">
+<td>Backup</td>
+<td>Full backup</td>
+<td>Sample backup</td>
+</tr>
+<tr class="odd">
+<td>Value</td>
+<td><span class="math inline">\(V(s)\)</span></td>
+<td><span class="math inline">\(Q(s,a)\)</span></td>
+</tr>
+<tr class="even">
+<td>Policy</td>
+<td>Deterministic greedy</td>
+<td><span class="math inline">\(\epsilon\)</span>-greedy</td>
+</tr>
+<tr class="odd">
+<td>Update</td>
+<td>Every state</td>
+<td>sampled state</td>
+</tr>
+<tr class="even">
+<td>Experience</td>
+<td>Simulated (from model)</td>
+<td>Real (from environment)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Reason why DP uses <span class="math inline">\(V(s)\)</span></strong>: We already know the transition probability <span class="math inline">\(p(s'|s,a)\)</span>, so we can derive the greedy policy using only <span class="math inline">\(V\)</span>:</p>
+<p><span class="math display">\[\pi_*(s) = \arg\max_a \sum_{s',r} p(s',r|s,a)[r + \gamma V^*(s')]\]</span></p>
+<p><strong>Reason why RL uses <span class="math inline">\(Q(s,a)\)</span></strong>: Since we don’t know the transition probability, we cannot use <span class="math inline">\(V\)</span> alone to determine the policy. <span class="math inline">\(Q\)</span> includes action information, allowing us to derive the policy without a model:</p>
+<p><span class="math display">\[\pi'(s) = \arg\max_a Q^\pi(s,a)\]</span></p>
+<p>RL Methods:</p>
 <ul>
-<li>Dynamic Programming (DP)
+<li><strong>Monte Carlo (MC)</strong> method</li>
+<li><strong>Temporal Difference (TD)</strong> learning
 <ul>
-<li><p>Planning under <strong>model-based</strong> setting using <strong>full-backup</strong>.</p></li>
-<li><p>Each iteration updates <strong>every value</strong> in the table using <strong>full backup</strong>.</p></li>
-<li><p>Usually, evaluate <span class="math inline">\(V(s)\)</span> rather than <span class="math inline">\(Q(s,a)\)</span>.</p></li>
-<li><p>Greedy policy improvement over <span class="math inline">\(V(s)\)</span> <strong>requires known MDP</strong>.</p>
-<ul>
-<li><span class="math display">\[\pi_*(s) = \arg\max\limits_a\sum_{s',r} p(s',r | s,a) [r + \gamma V^*(s')]\]</span></li>
-</ul></li>
-</ul></li>
-</ul>
-<!-- -->
-<ul>
-<li>Reinforcement Learning (RL)
-<ul>
-<li><p>Learning under <strong>model-free</strong> setting using <strong>sample backup</strong>, and approximately solving the Bellman optimality equation.</p></li>
-<li><p>Monte Carlo (MC) method</p></li>
-<li><p>Temporal Difference (TD) learnings</p>
-<ul>
-<li>Sarsa</li>
+<li>SARSA</li>
 <li>Q-learning</li>
 </ul></li>
-<li><p>Each iteration updates some values in the table from <strong>sampl backup</strong>.</p></li>
-<li><p>We evaluate <span class="math inline">\(Q(s,a)\)</span> instead of <span class="math inline">\(V(s)\)</span>.</p></li>
-<li><p>Greedy policy improvement over <span class="math inline">\(Q(s,a)\)</span> <strong>works for model-free settings:</strong></p>
-<ul>
-<li><span class="math display">\[\pi'(s)=\arg\max\limits_a Q^{\pi}(s,a)\]</span></li>
-</ul></li>
-</ul></li>
 </ul>
 </section>
-<section id="generalized-policy-iteration-gpi" class="level4">
-<h4 class="anchored" data-anchor-id="generalized-policy-iteration-gpi">Generalized Policy Iteration (GPI)</h4>
+<section id="generalized-policy-iteration-gpi" class="level3">
+<h3 class="anchored" data-anchor-id="generalized-policy-iteration-gpi">2.2 Generalized Policy Iteration (GPI)</h3>
+<p>Almost all RL methods can be described as GPI:</p>
+<p><span class="math display">\[\pi_0 \to q_{\pi_0} \to \pi_1 \to q_{\pi_1} \to \cdots \to \pi_* \to q_*\]</span></p>
 <ul>
-<li><strong>Policy Evaluation</strong> makes the vlaue function “consistent with the current policy”</li>
-<li><strong>Policy Improvement</strong> makes the policy “greedy w.r.t. the current value function” <img src="GPI.png" class="img-fluid" alt="GPI"></li>
+<li><strong>Policy Evaluation (PE)</strong>: Update value function to current policy</li>
+<li><strong>Policy Improvement (PI)</strong>: Update policy in a greedy manner with respect to the current value function</li>
 </ul>
-</section>
+<p>If both <strong>PE</strong> and <strong>PI</strong> stabilize, Bellman optimality equation is satisfied <span class="math inline">\(\rightarrow\)</span> optimal.</p>
 </section>
 <section id="monte-carlo-methods" class="level3">
-<h3 class="anchored" data-anchor-id="monte-carlo-methods">Monte Carlo Methods</h3>
-<section id="monte-carlo-mc" class="level4">
-<h4 class="anchored" data-anchor-id="monte-carlo-mc">Monte Carlo (MC)</h4>
+<h3 class="anchored" data-anchor-id="monte-carlo-methods">2.3 Monte Carlo Methods</h3>
+<section id="mc-features" class="level4">
+<h4 class="anchored" data-anchor-id="mc-features">MC Features</h4>
 <ul>
-<li><p>Repeated random sampling to compute numerical results</p></li>
-<li><p>Tabular updating and model-free method.</p></li>
-<li><p>MC Policy Iteration adapts GPI based on episode-by-episode of PE estimating <span class="math inline">\(Q(s,a)=q_\pi(s,a)\)</span> and e-greedy PI.</p></li>
-<li><p>MC learns from entire trajectory fo sampled episodes, updating after every single episode using real experience.</p></li>
+<li>Repeated random sampling to compute numerical results</li>
+<li><strong>Tabular updating</strong>, <strong>model-free</strong>, <strong>no bootstrapping</strong></li>
+<li>Learns from entire trajectories of sampled episodes <span class="math inline">\(\rightarrow\)</span> only apply to episodic tasks</li>
+<li>Robust to violations of the Markov property (does not depend on successor value estimates)</li>
 </ul>
-<p><span class="math display">\[\text{Value} = \text{average of returns } G_t \text{of sampled episodes}\]</span></p>
+<p><span class="math display">\[\text{Value} = \text{average of returns } G_t \text{ of sampled episodes}\]</span></p>
+<p>MC Policy Iteration GPI implements GPIs on an <strong>episode-by-episode</strong> basis:</p>
 <ul>
-<li>MC focuses on a small subset of the states.</li>
-<li>이 방법은 ’Successor value estimates’에 의존하지 않기 때문에 Markov property 위반으로 인한 피해가 적다.</li>
+<li>Policy Evaluation: Estimate <span class="math inline">\(Q(s,a) = q_\pi(s,a)\)</span></li>
+<li>Policy Improvement: <span class="math inline">\(\epsilon\)</span>-greedy</li>
 </ul>
-<p><span class="math display">\[\Rightarrow\text{No bootstrapping}\]</span></p>
 </section>
 <section id="mc-prediction-policy-evaluation" class="level4">
 <h4 class="anchored" data-anchor-id="mc-prediction-policy-evaluation">MC Prediction (Policy Evaluation)</h4>
-<ul>
-<li><p>Goal: learn <span class="math inline">\(q_\pi\)</span> from enitre episodes of real experience under policy <span class="math inline">\(\pi\)</span>.</p></li>
-<li><p>MC Policy Evaluation uses <strong>empirical mean return</strong> instead of expected return.</p></li>
-<li><p>To estimate <span class="math inline">\(q_\pi(s,a)\)</span></p>
-<ol type="1">
-<li>For each time step <span class="math inline">\(t\)</span> when state <span class="math inline">\(s\)</span> is visited and action <span class="math inline">\(a\)</span> is taken:
+<p><strong>Goal</strong>: learn <span class="math inline">\(q_\pi\)</span> from entire episodes of real experience under policy <span class="math inline">\(\pi\)</span>.</p>
+<p>MC Policy Evaluation uses <strong>empirical mean return</strong> instead of expected return.</p>
+<p>To estimate <span class="math inline">\(q_\pi(s,a)\)</span>, for each time step <span class="math inline">\(t\)</span> when <span class="math inline">\((s,a)\)</span> is visited:</p>
 <ul>
 <li>Increment count: <span class="math inline">\(n(s,a) \gets n(s,a) + 1\)</span></li>
 <li>Increment total return: <span class="math inline">\(S(s,a) \gets S(s,a) + G_t\)</span></li>
 <li>Estimate mean return: <span class="math inline">\(Q(s,a) = S(s,a) / n(s,a)\)</span></li>
-</ul></li>
-</ol></li>
-<li><p>As <span class="math inline">\(n(s,a) \to \infty\)</span>, <span class="math inline">\(Q(s,a) \to q_\pi(s,a)\)</span></p></li>
+</ul>
+<p>As <span class="math inline">\(n(s,a) \to \infty\)</span>, <span class="math inline">\(Q(s,a) \to q_\pi(s,a)\)</span> (law of large numbers)</p>
+<p><strong>First-Visit MC vs Every-Visit MC</strong>:</p>
+<ul>
+<li><strong>First-Visit</strong>: Update first visit to <span class="math inline">\((s,a)\)</span> within an episode → Stable Convergence</li>
+<li><strong>Every-Visit</strong>: Update every visit to <span class="math inline">\((s,a)\)</span> within an episode → Biased short returns mixed in, leading to unstable convergence</li>
+<li>Running episodes infinitely makes both converge to the true value</li>
 </ul>
 </section>
 <section id="incremental-mc-updates" class="level4">
-<h4 class="anchored" data-anchor-id="incremental-mc-updates">Incremental MC updates</h4>
+<h4 class="anchored" data-anchor-id="incremental-mc-updates">Incremental MC Updates</h4>
+<p><span class="math display">\[\mu_k = \mu_{k-1} + \frac{1}{k}(x_k - \mu_{k-1})\]</span></p>
+<p><span class="math display">\[Q(S_t, A_t) \gets Q(S_t, A_t) + \frac{1}{n(S_t, A_t)}[G_t - Q(S_t, A_t)]\]</span></p>
+</section>
+<section id="constant-alpha-mc" class="level4">
+<h4 class="anchored" data-anchor-id="constant-alpha-mc">Constant-<span class="math inline">\(\alpha\)</span> MC</h4>
+<p><span class="math display">\[Q(S_t, A_t) \gets Q(S_t, A_t) + \alpha[G_t - Q(S_t, A_t)]\]</span></p>
+<p>Develop recursively:</p>
+<p><span class="math display">\[Q_n = \alpha G_n + (1-\alpha)\alpha G_{n-1} + (1-\alpha)^2 \alpha G_{n-2} + \cdots\]</span></p>
+<p>The weight of the <span class="math inline">\(k\)</span>-th past sample is <span class="math inline">\((1-\alpha)^k \alpha\)</span> <span class="math inline">\(\rightarrow\)</span> <strong>exponentially forgotten</strong></p>
 <ul>
-<li>Incremental Mean
-<ul>
-<li>Partial mean <span class="math inline">\(\mu_k\)</span> of sequence <span class="math inline">\(x_1, x_2, \ldots\)</span> is computed incrementally <span class="math display">\[\mu_k = \frac{1}{k}\sum_{i=1}^k x_i = \mu_{k-1} + \frac{1}{k}(x_k - \mu_{k-1})\]</span></li>
-</ul></li>
-<li>Incremental Monte Carlo Updates
-<ul>
-<li>Increment count: <span class="math inline">\(n(S_t, A_t) \gets n(S_t, A_t) + 1\)</span></li>
-<li>Update rule: <span class="math inline">\(Q(S_t, A_t) \gets Q(S_t, A_t) + \frac{1}{n(S_t, A_t)} [G_t - Q(S_t, A_t)]\)</span></li>
-</ul></li>
+<li><span class="math inline">\(\frac{1}{n}\)</span> type: Equal average of all pasts</li>
+<li>Constant-<span class="math inline">\(\alpha\)</span>: Exponentially forgotten <span class="math inline">\(\rightarrow\)</span> important for <strong>non-stationary</strong></li>
+<li>If <span class="math inline">\(\alpha = 1\)</span> most recent <span class="math inline">\(G_t\)</span> only is reflected and previous values are completely discarded</li>
 </ul>
 </section>
-<section id="constant-alpha-mc-policy-evaluation" class="level4">
-<h4 class="anchored" data-anchor-id="constant-alpha-mc-policy-evaluation">constant <span class="math inline">\(\alpha\)</span> MC Policy Evaluation</h4>
-<ul>
-<li><p>In practice, a <strong>step-size</strong> <span class="math inline">\(\alpha\)</span> is used <span class="math display">\[Q(S_t, A_t) \gets Q(S_t, A_t) + \alpha [G_t - Q(S_t, A_t)]\]</span></p></li>
-<li><p>Old episodes are exponentially forgotten due to the <span class="math inline">\((1-\alpha)Q(S_t, A_t)\)</span> term.</p></li>
-</ul>
 </section>
-<section id="exploitation-vs-exploration" class="level4">
-<h4 class="anchored" data-anchor-id="exploitation-vs-exploration">Exploitation vs Exploration</h4>
+<section id="exploitation-vs-exploration" class="level3">
+<h3 class="anchored" data-anchor-id="exploitation-vs-exploration">2.4 Exploitation vs Exploration</h3>
 <ul>
-<li><strong>Exploitation</strong>: making the best decision by using already known information
-<ul>
-<li>By selecting the action with the highest Q-value while sampling new episodes, we can refine our policy efficiently from an alreadly promising region in the state-action space.</li>
-</ul></li>
-<li><strong>Exploration</strong>: searching for new decisions by gathering more information
-<ul>
-<li>By selecting an extra random action while <span class="math inline">\(\epsilon\)</span>-probability while sampling new episodes, we can find a new and maybe more promising region within the state-action space.</li>
-</ul></li>
-<li>To trade-off Exploitation and Exploration, use <strong><span class="math inline">\(\epsilon\)</span>-greedy policy</strong>.</li>
+<li><strong>Exploitation</strong>: Making the best decision by using already known information <span class="math inline">\(\rightarrow\)</span> Refine our policy efficiently from al already promising regions</li>
+<li><strong>Exploration</strong>: Searching for new decisions by gathering more information <span class="math inline">\(\rightarrow\)</span> Select random action with <span class="math inline">\(\epsilon\)</span>-probability</li>
 </ul>
+<p>To trade-off Exploitation and Exploration, use <strong><span class="math inline">\(\epsilon\)</span>-greedy policy</strong>.</p>
 </section>
-<section id="mc-control-epsilon-greedy-policy-improvement" class="level4">
-<h4 class="anchored" data-anchor-id="mc-control-epsilon-greedy-policy-improvement">MC Control (<span class="math inline">\(\epsilon\)</span>-Greedy Policy Improvement)</h4>
+<section id="mc-control-epsilon-greedy-policy-improvement" class="level3">
+<h3 class="anchored" data-anchor-id="mc-control-epsilon-greedy-policy-improvement">2.5 MC Control (<span class="math inline">\(\epsilon\)</span>-Greedy Policy Improvement)</h3>
+<p><span class="math display">\[\pi'(a|s) = \begin{cases} 1 - \epsilon + \epsilon/m &amp; \text{if } a = \arg\max_{a'} Q^\pi(s,a') \\ \epsilon/m &amp; \text{otherwise} \end{cases}\]</span></p>
 <ul>
-<li><p>Choose the greedy action with probability <span class="math inline">\(1-\epsilon\)</span> and a random action with probability <span class="math inline">\(\epsilon\)</span>. <span class="math display">\[\epsilon/m \text{ for each of all } m \text{ actions } \Rightarrow \text{stochastic policy}\]</span></p></li>
-<li><p>All actions are selected with non-zero probability for ensuring continual exploration. <span class="math display">\[\pi'(a|s) = \begin{cases}1 - \epsilon + \epsilon/m &amp; \text{if } a=\arg\max_{a'}Q^\pi(s,a') \\ \epsilon/m &amp; \text{otherwise } (m-1 \text{actions})\end{cases}\]</span></p></li>
-<li><p>In full backup DP, Policy Improvement uses <span class="math display">\[\pi'(s) = \arg\max_{a} Q^\pi(s,a) \Rightarrow \text{deterministic policy}\]</span></p></li>
-<li><p>For any <span class="math inline">\(\epsilon\)</span>-greedy policy <span class="math inline">\(\pi\)</span>, <span class="math inline">\(\epsilon\)</span>-greedy policy <span class="math inline">\(\pi'\)</span> with respect to <span class="math inline">\(q_\pi\)</span> is always improved: <span class="math inline">\(v_{\pi'}\ge v_\pi(s)\)</span></p></li>
+<li>All actions are selected with non-zero probability <span class="math inline">\(\rightarrow\)</span> guaranteed continuous exploration</li>
+<li>In full backup DP, <span class="math inline">\(\pi'(s) = \arg\max_a Q^\pi(s,a)\)</span> <span class="math inline">\(\rightarrow\)</span> deterministic policy</li>
 </ul>
+<div class="callout callout-style-default callout-note callout-titled" title="$\epsilon$-Greedy Policy Improvement">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span><span class="math inline">\(\epsilon\)</span>-Greedy Policy Improvement
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>For any <span class="math inline">\(\epsilon\)</span>-greedy policy <span class="math inline">\(\pi\)</span>, <span class="math inline">\(\epsilon\)</span>-greedy policy <span class="math inline">\(\pi'\)</span> w.r.t. <span class="math inline">\(q_\pi\)</span> is always improved: <span class="math display">\[v_{\pi'}(s) \ge v_{\pi}(s)\]</span></p>
+</div>
+</div>
+<p><strong>Proof</strong>:</p>
+<p><span class="math display">\[
+\begin{aligned}
+q_\pi(s,\pi'(s)) &amp;= \sum_a \pi'(a|s) q_\pi(s,a) \\
+&amp;= \frac{\epsilon}{m}\sum_a q_\pi(s,a) + (1-\epsilon)\max_{a'} q_\pi(s,a') \\
+&amp;\geq \frac{\epsilon}{m}\sum_a q_\pi(s,a) + (1-\epsilon)\sum_a \underbrace{\frac{\pi(a|s)-\epsilon/m}{1-\epsilon}}_{\text{Prob. dist. with sum 1}} q_\pi(s,a) \\
+&amp;= \sum_a \pi(a|s) q_\pi(s,a) = v_\pi(s)
+\end{aligned}
+\]</span></p>
 </section>
-<section id="greedy-in-limit-with-infinite-exploration-glie" class="level4">
-<h4 class="anchored" data-anchor-id="greedy-in-limit-with-infinite-exploration-glie">Greedy in Limit with Infinite Exploration (GLIE)</h4>
+<section id="glie-greedy-in-the-limit-with-infinite-exploration" class="level3">
+<h3 class="anchored" data-anchor-id="glie-greedy-in-the-limit-with-infinite-exploration">2.6 GLIE (Greedy in the Limit with Infinite Exploration)</h3>
+<p>Both conditions must be satisfied <strong>simultaneously</strong>:</p>
+<p><strong>Condition 1</strong> — Explored infinitely:</p>
+<p><span class="math display">\[\lim_{k \to \infty} n_k(s,a) = \infty\]</span></p>
+<p><strong>Condition 2</strong> — policy converges to greedy policy:</p>
+<p><span class="math display">\[\lim_{k \to \infty} \pi_k(a|s) = 1 \quad \text{where } a = \arg\max_{a'} Q_k(s,a')\]</span></p>
+<p><strong>Set to <span class="math inline">\(\epsilon_k = \frac{1}{k}\)</span> to satisfy both conditions simultaneously</strong>:</p>
+<p><span class="math display">\[\pi_k(a^*|s) = 1 - \frac{1}{k} + \frac{1}{mk} \to 1\]</span></p>
+<p><strong>Why are both conditions necessary</strong>:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 80%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Condition</th>
+<th>Problem</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Condition 1 only</td>
+<td>Continuously exploring <span class="math inline">\(\rightarrow\)</span> cannot converge to greedy policy</td>
+</tr>
+<tr class="even">
+<td>Condition 2 only</td>
+<td>Too early convergence to greedy <span class="math inline">\(\rightarrow\)</span> unvisited <span class="math inline">\((s,a)\)</span> pairs occur</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Problems with fixed <span class="math inline">\(\epsilon\)</span></strong></p>
+<p>The probability of selecting the greedy action remains permanently below 1: <span class="math inline">\(1 - \epsilon + \epsilon/m &lt; 1\)</span> <span class="math inline">\(\rightarrow\)</span> cannot converge to the true optimal policy</p>
+<p><strong>GLIE MC Control</strong>:</p>
 <ul>
-<li><p>All state-action pairs <span class="math inline">\((s,a)\)</span> are explored infinitely many times: <span class="math display">\[\lim\limits_{k\to\infty}n_k(s,a)=\infty\]</span></p></li>
-<li><p>The learning policy converges to a greedy policy: <span class="math display">\[\lim\limits_{k\to\infty}\pi_k(a|s) = 1 \text{ where } a = \arg\max\limits_{a'}Q_k(s,a')\]</span></p></li>
-<li><p>GLIE MC Control: <span class="math inline">\(\epsilon\)</span>-greedy is GLIE if <span class="math inline">\(\epsilon_k\to 0\)</span> as follows:</p>
+<li>In the <span class="math inline">\(k\)</span>-th episode, for each <span class="math inline">\((S_t, A_t)\)</span>:
 <ul>
-<li><p>In the <span class="math inline">\(k\)</span>-th episode using policy <span class="math inline">\(\pi\)</span>, for each state-action pair <span class="math inline">\((S_t,A_t)\)</span>: <span class="math display">\[n(S_t, A_t) \gets n(S_t, A_t) + 1Q(S_t, A_t) \gets Q(S_t, A_t) + \frac{1}{n(S_t, A_t)} [G_t - Q(S_t, A_t)]\]</span></p></li>
-<li><p>Improve policy based on the new action-value function: <span class="math inline">\(\epsilon=1/k,\pi\gets\epsilon\text{-greedy}(Q)\)</span></p></li>
+<li><span class="math inline">\(n(S_t, A_t) \gets n(S_t, A_t) + 1\)</span></li>
+<li><span class="math inline">\(Q(S_t, A_t) \gets Q(S_t, A_t) + \frac{1}{n(S_t, A_t)}[G_t - Q(S_t, A_t)]\)</span></li>
 </ul></li>
-<li><p>GLIE MC Control converges to the optimal: <span class="math inline">\(Q(s,a)\to q_*(s,a)\)</span></p></li>
+<li>Improve policy with the new action-value function: <span class="math inline">\(\epsilon = \frac{1}{k}\)</span>, <span class="math inline">\(\pi \gets \epsilon\text{-greedy}(Q)\)</span></li>
 </ul>
-<div id="algo-monte-carlo-method" class="pseudocode-container quarto-float" data-line-number-punc=":" data-indent-lines="false" data-pseudocode-number="3" data-no-end="false" data-comment-delimiter="//" data-indent-size="1.2em" data-caption-prefix="Algorithm" data-line-number="true">
+<p><span class="math inline">\(Q(s,a) \to q_*(s,a)\)</span> (converge to optimal)</p>
+<section id="mc-method-pseudo-code" class="level4">
+<h4 class="anchored" data-anchor-id="mc-method-pseudo-code">MC Method Pseudo Code</h4>
+<div id="algo-mc-control" class="pseudocode-container quarto-float" data-line-number-punc=":" data-caption-prefix="Algorithm" data-line-number="true" data-pseudocode-number="3" data-indent-lines="false" data-comment-delimiter="//" data-indent-size="1.2em" data-no-end="false">
 <div class="pseudocode">
-\begin{algorithm} \caption{Monte Carlo Method} \begin{algorithmic} \State \textbf{1. Initialization} \State $Q(s,a)$, all $S\in\mathcal{S}$, $A\in\mathcal{A}(S)$, arbitrarily and $Q(\text{terminal}, \cdot) = 0$ \State Returns $(S,A) \gets$ empty list \State $\pi \gets$ arbitrarily $\epsilon$-soft policy (non-empty probabilities) \State \State \textbf{2. Repeat for each episode} \Repeat \State (a) Generate an episode using $\pi:S_0, A_0, R_1, S_1, \ldots, S_{T-1}, A_{T-1}, R_T$ \State $G\gets 0$ \State (b) \For{each step of episode, $t=T-1, T-2, \ldots, 0$} \State $G \gets \gamma G + R_{t+1}$ \State Unless $(S_t, A_t)$ appears in $(S_0, A_0), \ldots, (S_{t-1}, A_{t-1})$: ignore this lien for every-visit MC \State Append $G$ to Returns $(S_t, A_t)$ \State $Q(S_t, A_T)\gets$ average(Returns$(S_t, A_t)$) \EndFor \For{each $S_t$ in the episode} \State $A^*\gets\arg\max_{a}Q(S_t,a)$ \For{all $a\in\mathcal{A}(S_t)$} \State $\pi(a|S_t) \gets \begin{cases}1-\epsilon + \epsilon/|\mathcal{A}(S_t)| &amp; \text{if } a=A^* \\ \epsilon/|\mathcal{A}(S_t)| &amp; \text{otherwise}\end{cases}$ \EndFor \EndFor \Until{$\text{forever}$} \end{algorithmic} \end{algorithm}
+\begin{algorithm} \caption{Monte Carlo Method} \begin{algorithmic} \State $\textbf{Initialize}$ $Q(S,A)$, all $S\in\mathcal{S}$, $A\in\mathcal{A}(S)$, arbitrarily and $Q(\text{terminal},\cdot)=0$ \State $\hspace{2em}Returns(S,A)$ $\gets$ empty list \State $\hspace{2em}\pi \gets$ arbitrarily $\epsilon$-soft policy (non-empty probabilities) \State \Repeat \State (a) Generate an episode using $\pi$: $S_0, A_0, R_1, S_1, \ldots, S_{T-1}, A_{T-1}, R_T$ \State $\hspace{1.5em}G \gets 0$ \State (b) Repeat (for each step of episode), $t=T-1, T-2, \ldots, 0$: \State $\hspace{1.5em}G \gets \gamma G + R_{t+1}$ \State $\hspace{1.5em}$ Unless $(S_t, A_t)$ appears in $(S_0, A_0), \ldots, (S_{t-1}, A_{t-1})$: $\gets$ first-visit only \State $\hspace{3.5em}$ Append $G$ to $Returns(S_t, A_t)$ \State $\hspace{3.5em}$ $Q(S_t, A_t) \gets$ average($Returns(S_t, A_t)$) \State (c) For each $S_t$ in the episode: \State $\hspace{1.5em}A^* \gets \arg\max_a Q(S_t, a)$ \State $\hspace{1.5em}$ For all $a \in \mathcal{A}(S_t)$: \State $\hspace{1.5em}\pi(a|S_t) \gets \begin{cases} 1 - \epsilon + \frac{\epsilon}{|\mathcal{A}(S)|} &amp; \text{if } a = A^* \\ \frac{\epsilon}{|\mathcal{A}(S)|} &amp; \text{otherwise} \end{cases}$ \Until{forever (for each episode)} \end{algorithmic} \end{algorithm}
 </div>
 </div>
 
