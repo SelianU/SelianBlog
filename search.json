@@ -1,26 +1,5 @@
 [
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "SelianBlog",
-    "section": "",
-    "text": "연구와 논문 리뷰를 기록하는 블로그입니다."
-  },
-  {
-    "objectID": "index.html#recent-posts",
-    "href": "index.html#recent-posts",
-    "title": "SelianBlog",
-    "section": "Recent Posts",
-    "text": "Recent Posts\n\n\n\n\n\n\n\n\n\n\nMDP & Bellman Equation\n\n\n\nApr 14, 2026\n\n\n\n\n\n\n\n\n\n\n\n\n\nDP & RL\n\n\n\nApr 14, 2026\n\n\n\n\n\n\nNo matching items"
-  },
-  {
-    "objectID": "index.html#recent-reviews",
-    "href": "index.html#recent-reviews",
-    "title": "SelianBlog",
-    "section": "Recent Reviews",
-    "text": "Recent Reviews\n\n\n\n\nNo matching items"
-  },
-  {
     "objectID": "posts/DP & RL/index.html",
     "href": "posts/DP & RL/index.html",
     "title": "DP & RL",
@@ -40,20 +19,6 @@
     "title": "DP & RL",
     "section": "2. Reinforcement Learning",
     "text": "2. Reinforcement Learning\n\n2.1 DP vs RL\n\n\n\n\nDynamic Programming\nReinforcement Learning\n\n\n\n\nSetting\nModel-based\nModel-free\n\n\nBackup\nFull backup\nSample backup\n\n\nValue\n\\(V(s)\\)\n\\(Q(s,a)\\)\n\n\nPolicy\nDeterministic greedy\n\\(\\epsilon\\)-greedy\n\n\nUpdate\nEvery state\nsampled state\n\n\nExperience\nSimulated (from model)\nReal (from environment)\n\n\n\nReason why DP uses \\(V(s)\\): We already know the transition probability \\(p(s'|s,a)\\), so we can derive the greedy policy using only \\(V\\):\n\\[\\pi_*(s) = \\arg\\max_a \\sum_{s',r} p(s',r|s,a)[r + \\gamma V^*(s')]\\]\nReason why RL uses \\(Q(s,a)\\): Since we don’t know the transition probability, we cannot use \\(V\\) alone to determine the policy. \\(Q\\) includes action information, allowing us to derive the policy without a model:\n\\[\\pi'(s) = \\arg\\max_a Q^\\pi(s,a)\\]\nRL Methods:\n\nMonte Carlo (MC) method\nTemporal Difference (TD) learning\n\nSARSA\nQ-learning\n\n\n\n\n2.2 Generalized Policy Iteration (GPI)\nAlmost all RL methods can be described as GPI:\n\\[\\pi_0 \\to q_{\\pi_0} \\to \\pi_1 \\to q_{\\pi_1} \\to \\cdots \\to \\pi_* \\to q_*\\]\n\nPolicy Evaluation (PE): Update value function to current policy\nPolicy Improvement (PI): Update policy in a greedy manner with respect to the current value function\n\nIf both PE and PI stabilize, Bellman optimality equation is satisfied \\(\\rightarrow\\) optimal.\n\n\n2.3 Monte Carlo Methods\n\nMC Features\n\nRepeated random sampling to compute numerical results\nTabular updating, model-free, no bootstrapping\nLearns from entire trajectories of sampled episodes \\(\\rightarrow\\) only apply to episodic tasks\nRobust to violations of the Markov property (does not depend on successor value estimates)\n\n\\[\\text{Value} = \\text{average of returns } G_t \\text{ of sampled episodes}\\]\nMC Policy Iteration GPI implements GPIs on an episode-by-episode basis:\n\nPolicy Evaluation: Estimate \\(Q(s,a) = q_\\pi(s,a)\\)\nPolicy Improvement: \\(\\epsilon\\)-greedy\n\n\n\nMC Prediction (Policy Evaluation)\nGoal: learn \\(q_\\pi\\) from entire episodes of real experience under policy \\(\\pi\\).\nMC Policy Evaluation uses empirical mean return instead of expected return.\nTo estimate \\(q_\\pi(s,a)\\), for each time step \\(t\\) when \\((s,a)\\) is visited:\n\nIncrement count: \\(n(s,a) \\gets n(s,a) + 1\\)\nIncrement total return: \\(S(s,a) \\gets S(s,a) + G_t\\)\nEstimate mean return: \\(Q(s,a) = S(s,a) / n(s,a)\\)\n\nAs \\(n(s,a) \\to \\infty\\), \\(Q(s,a) \\to q_\\pi(s,a)\\) (law of large numbers)\nFirst-Visit MC vs Every-Visit MC:\n\nFirst-Visit: Update first visit to \\((s,a)\\) within an episode → Stable Convergence\nEvery-Visit: Update every visit to \\((s,a)\\) within an episode → Biased short returns mixed in, leading to unstable convergence\nRunning episodes infinitely makes both converge to the true value\n\n\n\nIncremental MC Updates\n\\[\\mu_k = \\mu_{k-1} + \\frac{1}{k}(x_k - \\mu_{k-1})\\]\n\\[Q(S_t, A_t) \\gets Q(S_t, A_t) + \\frac{1}{n(S_t, A_t)}[G_t - Q(S_t, A_t)]\\]\n\n\nConstant-\\(\\alpha\\) MC\n\\[Q(S_t, A_t) \\gets Q(S_t, A_t) + \\alpha[G_t - Q(S_t, A_t)]\\]\nDevelop recursively:\n\\[Q_n = \\alpha G_n + (1-\\alpha)\\alpha G_{n-1} + (1-\\alpha)^2 \\alpha G_{n-2} + \\cdots\\]\nThe weight of the \\(k\\)-th past sample is \\((1-\\alpha)^k \\alpha\\) \\(\\rightarrow\\) exponentially forgotten\n\n\\(\\frac{1}{n}\\) type: Equal average of all pasts\nConstant-\\(\\alpha\\): Exponentially forgotten \\(\\rightarrow\\) important for non-stationary\nIf \\(\\alpha = 1\\) most recent \\(G_t\\) only is reflected and previous values are completely discarded\n\n\n\n\n2.4 Exploitation vs Exploration\n\nExploitation: Making the best decision by using already known information \\(\\rightarrow\\) Refine our policy efficiently from al already promising regions\nExploration: Searching for new decisions by gathering more information \\(\\rightarrow\\) Select random action with \\(\\epsilon\\)-probability\n\nTo trade-off Exploitation and Exploration, use \\(\\epsilon\\)-greedy policy.\n\n\n2.5 MC Control (\\(\\epsilon\\)-Greedy Policy Improvement)\n\\[\\pi'(a|s) = \\begin{cases} 1 - \\epsilon + \\epsilon/m & \\text{if } a = \\arg\\max_{a'} Q^\\pi(s,a') \\\\ \\epsilon/m & \\text{otherwise} \\end{cases}\\]\n\nAll actions are selected with non-zero probability \\(\\rightarrow\\) guaranteed continuous exploration\nIn full backup DP, \\(\\pi'(s) = \\arg\\max_a Q^\\pi(s,a)\\) \\(\\rightarrow\\) deterministic policy\n\n\n\n\n\n\n\nNote\\(\\epsilon\\)-Greedy Policy Improvement\n\n\n\nFor any \\(\\epsilon\\)-greedy policy \\(\\pi\\), \\(\\epsilon\\)-greedy policy \\(\\pi'\\) w.r.t. \\(q_\\pi\\) is always improved: \\[v_{\\pi'}(s) \\ge v_{\\pi}(s)\\]\n\n\nProof:\n\\[\n\\begin{aligned}\nq_\\pi(s,\\pi'(s)) &= \\sum_a \\pi'(a|s) q_\\pi(s,a) \\\\\n&= \\frac{\\epsilon}{m}\\sum_a q_\\pi(s,a) + (1-\\epsilon)\\max_{a'} q_\\pi(s,a') \\\\\n&\\geq \\frac{\\epsilon}{m}\\sum_a q_\\pi(s,a) + (1-\\epsilon)\\sum_a \\underbrace{\\frac{\\pi(a|s)-\\epsilon/m}{1-\\epsilon}}_{\\text{Prob. dist. with sum 1}} q_\\pi(s,a) \\\\\n&= \\sum_a \\pi(a|s) q_\\pi(s,a) = v_\\pi(s)\n\\end{aligned}\n\\]\n\n\n2.6 GLIE (Greedy in the Limit with Infinite Exploration)\nBoth conditions must be satisfied simultaneously:\nCondition 1 — Explored infinitely:\n\\[\\lim_{k \\to \\infty} n_k(s,a) = \\infty\\]\nCondition 2 — policy converges to greedy policy:\n\\[\\lim_{k \\to \\infty} \\pi_k(a|s) = 1 \\quad \\text{where } a = \\arg\\max_{a'} Q_k(s,a')\\]\nSet to \\(\\epsilon_k = \\frac{1}{k}\\) to satisfy both conditions simultaneously:\n\\[\\pi_k(a^*|s) = 1 - \\frac{1}{k} + \\frac{1}{mk} \\to 1\\]\nWhy are both conditions necessary:\n\n\n\n\n\n\n\nCondition\nProblem\n\n\n\n\nCondition 1 only\nContinuously exploring \\(\\rightarrow\\) cannot converge to greedy policy\n\n\nCondition 2 only\nToo early convergence to greedy \\(\\rightarrow\\) unvisited \\((s,a)\\) pairs occur\n\n\n\nProblems with fixed \\(\\epsilon\\)\nThe probability of selecting the greedy action remains permanently below 1: \\(1 - \\epsilon + \\epsilon/m &lt; 1\\) \\(\\rightarrow\\) cannot converge to the true optimal policy\nGLIE MC Control:\n\nIn the \\(k\\)-th episode, for each \\((S_t, A_t)\\):\n\n\\(n(S_t, A_t) \\gets n(S_t, A_t) + 1\\)\n\\(Q(S_t, A_t) \\gets Q(S_t, A_t) + \\frac{1}{n(S_t, A_t)}[G_t - Q(S_t, A_t)]\\)\n\nImprove policy with the new action-value function: \\(\\epsilon = \\frac{1}{k}\\), \\(\\pi \\gets \\epsilon\\text{-greedy}(Q)\\)\n\n\\(Q(s,a) \\to q_*(s,a)\\) (converge to optimal)\n\nMC Method Pseudo Code\n\n\n\\begin{algorithm} \\caption{Monte Carlo Method} \\begin{algorithmic} \\State $\\textbf{Initialize}$ $Q(S,A)$, all $S\\in\\mathcal{S}$, $A\\in\\mathcal{A}(S)$, arbitrarily and $Q(\\text{terminal},\\cdot)=0$ \\State $\\hspace{2em}Returns(S,A)$ $\\gets$ empty list \\State $\\hspace{2em}\\pi \\gets$ arbitrarily $\\epsilon$-soft policy (non-empty probabilities) \\State \\Repeat \\State (a) Generate an episode using $\\pi$: $S_0, A_0, R_1, S_1, \\ldots, S_{T-1}, A_{T-1}, R_T$ \\State $\\hspace{1.5em}G \\gets 0$ \\State (b) Repeat (for each step of episode), $t=T-1, T-2, \\ldots, 0$: \\State $\\hspace{1.5em}G \\gets \\gamma G + R_{t+1}$ \\State $\\hspace{1.5em}$ Unless $(S_t, A_t)$ appears in $(S_0, A_0), \\ldots, (S_{t-1}, A_{t-1})$: $\\gets$ first-visit only \\State $\\hspace{3.5em}$ Append $G$ to $Returns(S_t, A_t)$ \\State $\\hspace{3.5em}$ $Q(S_t, A_t) \\gets$ average($Returns(S_t, A_t)$) \\State (c) For each $S_t$ in the episode: \\State $\\hspace{1.5em}A^* \\gets \\arg\\max_a Q(S_t, a)$ \\State $\\hspace{1.5em}$ For all $a \\in \\mathcal{A}(S_t)$: \\State $\\hspace{1.5em}\\pi(a|S_t) \\gets \\begin{cases} 1 - \\epsilon + \\frac{\\epsilon}{|\\mathcal{A}(S)|} & \\text{if } a = A^* \\\\ \\frac{\\epsilon}{|\\mathcal{A}(S)|} & \\text{otherwise} \\end{cases}$ \\Until{forever (for each episode)} \\end{algorithmic} \\end{algorithm}"
-  },
-  {
-    "objectID": "posts.html",
-    "href": "posts.html",
-    "title": "Posts",
-    "section": "",
-    "text": "MDP & Bellman Equation\n\n\n\nRL\n\n\n\nIntroduction, MDP, Bellman Equation\n\n\n\n\n\nApr 14, 2026\n\n\nSelian\n\n\n\n\n\n\n\n\n\n\n\n\nDP & RL\n\n\n\nRL\n\n\n\nDynamic Programming, Reinforcement Learning\n\n\n\n\n\nApr 14, 2026\n\n\nSelian\n\n\n\n\n\nNo matching items"
-  },
-  {
-    "objectID": "reviews.html",
-    "href": "reviews.html",
-    "title": "Reviews",
-    "section": "",
-    "text": "No matching items"
   },
   {
     "objectID": "posts/MDP & Bellman Equation/index.html",
@@ -105,10 +70,66 @@
     "text": "6. Bellman Optimality Equation\n\n6.1 Optimal Value Functions\n\\[v_*(s) = \\max_\\pi v_\\pi(s), \\qquad q_*(s,a) = \\max_\\pi q_\\pi(s,a)\\]\n\n\n6.2 Theorem (Optimal Policy Existence)\n\n\n\n\n\n\nNote[Theorem] Any MDP satisfies the following:\n\n\n\n\nThere exists an optimal policy \\(\\pi_*\\) such that \\(\\pi_* \\ge \\pi\\) for all \\(\\pi\\).\nAll optimal policies achieve the optimal state-value function: \\(v_{\\pi_*}(s) = v_*(s)\\)\nAll optimal policies achieve the optimal action-value function: \\(q_{\\pi_*} (s,a) = q_*(s,a)\\)\n\n\n\n\n\n6.3 Finding an Optimal Policy\n\\[\\pi_*(a \\mid s) = \\begin{cases} 1 & \\text{if } a = \\arg\\max_a q_*(s,a) \\\\ 0 & \\text{otherwise} \\end{cases}\\]\n\nThere is always deterministic optimal policy for any MDP.\nIf we find \\(q_*(s,a)\\), we immediately have the policy: \\(\\pi_*(s) = \\arg\\max_a q_*(s,a)\\)\n\n\n\n6.4 Important formulas\n\\[v_*(s) = \\max_a q_*(s,a) \\quad \\because v_\\pi(s) = \\sum_a \\pi(a|s) q_\\pi(s,a)\\]\n\\[q_*(s,a) = r(s,a) + \\gamma \\sum_{s'} p(s'|s,a) v_*(s') = R_s^a + \\gamma \\sum_{s'} P^a_{ss'} v_*(s')\\]\nImportant asymmetry:\n\n\\(v_*(s)\\) can be obtained directly from \\(q_*(s,a)\\).\n\\(q_*(s,a)\\) cannot be obtained directly from \\(v_*(s)\\).\n\nModel-based setting: Need to know the transition probability \\(p(s'|s,a)\\)\nModel-free setting: Directly compute \\(Q(s,a)\\)\n\n\n\n\n6.5 Bellman Optimality Equation\n\\[v_*(s) = \\max_a \\sum_{s',r} p(s',r \\mid s,a)\\left[r + \\gamma v_*(s')\\right]\\]\n\\[q_*(s,a) = R_s^a + \\gamma \\sum_{s'} P_{ss'}^a \\max_{a'} q_*(s', a')\\]"
   },
   {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "SelianBlog",
+    "section": "",
+    "text": "연구와 논문 리뷰를 기록하는 블로그입니다."
+  },
+  {
+    "objectID": "index.html#recent-posts",
+    "href": "index.html#recent-posts",
+    "title": "SelianBlog",
+    "section": "Recent Posts",
+    "text": "Recent Posts\n\n\n\n\n\n\n\n\n\n\nTD & DQN\n\n\n\nJun 6, 2026\n\n\n\n\n\n\n\n\n\n\n\n\n\nMDP & Bellman Equation\n\n\n\nApr 14, 2026\n\n\n\n\n\n\n\n\n\n\n\n\n\nDP & RL\n\n\n\nApr 14, 2026\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "index.html#recent-reviews",
+    "href": "index.html#recent-reviews",
+    "title": "SelianBlog",
+    "section": "Recent Reviews",
+    "text": "Recent Reviews\n\n\n\n\nNo matching items"
+  },
+  {
     "objectID": "about.html",
     "href": "about.html",
     "title": "About",
     "section": "",
     "text": "Selian"
+  },
+  {
+    "objectID": "posts.html",
+    "href": "posts.html",
+    "title": "Posts",
+    "section": "",
+    "text": "TD & DQN\n\n\n\nRL\n\n\n\nTemporal Difference Deep Q-Networks\n\n\n\n\n\nJun 6, 2026\n\n\nSelian\n\n\n\n\n\n\n\n\n\n\n\n\nMDP & Bellman Equation\n\n\n\nRL\n\n\n\nIntroduction, MDP, Bellman Equation\n\n\n\n\n\nApr 14, 2026\n\n\nSelian\n\n\n\n\n\n\n\n\n\n\n\n\nDP & RL\n\n\n\nRL\n\n\n\nDynamic Programming, Reinforcement Learning\n\n\n\n\n\nApr 14, 2026\n\n\nSelian\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "reviews.html",
+    "href": "reviews.html",
+    "title": "Reviews",
+    "section": "",
+    "text": "No matching items"
+  },
+  {
+    "objectID": "posts/TD & DQN/index.html",
+    "href": "posts/TD & DQN/index.html",
+    "title": "TD & DQN",
+    "section": "",
+    "text": "GPI: Generalized Policy Iteration\n\\[PE \\rightarrow PI \\rightarrow PE \\rightarrow PI \\rightarrow \\cdots\\]\n\n강화 학습의 학습 루프는 Policy Evaluation과 Policy Improvement의 반복이다.\n\nPolicy Evaluation 방법에는 Monte Carlo(MC)와 Temporal Difference(TD)가 있다.\n\n\n\n\n\n\n\n\nModel\nBackup\nAlgorithm\n\n\n\n\nMonte Carlo\nFull Backup\n\\(V(S_{t}) \\gets V(S_{t}) + \\alpha [G_{t} - V(s_{t})]\\)\n\n\nTemporal Difference\nOne-Step Backup\n\\(V(S_{t}) \\gets V(S_{t}) + \\alpha [R_{t+1} + \\gamma V(s_{t+1}) - V(s_{t})]\\)\n\n\n\n\nTD target: \\(R_{t+1} + \\gamma V(s_{t+1})\\)\nTD error: \\(\\delta_{t} = \\text{TD target} - V(s_{t}) = R_{t+1} + \\gamma V(s_{t+1}) - V(s_{t})\\)\nSampling + Bootstrapping\n\nOn-policy TD prediction: SARSA \\[Q(S_{t}, A_{t}) \\gets Q(S_{t}, A_{t}) + \\alpha [R_{t+1} + \\gamma Q(S_{t+1}, A_{t+1}) - Q(S_{t}, A_{t})]\\]\n\n안전한 경로\n\nOff-policy TD prediction: Q-learning \\[Q(S_{t}, A_{t}) \\gets Q(S_{t}, A_{t}) + \\alpha [R_{t+1} + \\gamma \\max_{a} Q(S_{t+1}, a) - Q(S_{t}, A_{t})]\\]\n\nOptimistic한 경로\n\n\n\n\nOn-policy: Target policy \\(\\pi\\) = Behavior policy \\(\\mu\\)\nOff-policy: Target policy \\(\\pi\\) \\(\\neq\\) Behavior policy \\(\\mu\\)\n\n\n\n\n\\[\\mathbb{E}_{x\\sim p}[f(x)] = \\int f(x) p(x) dx = \\int f(x) \\frac{p(x)}{q(x)} q(x) dx = \\mathbb{E}_{x\\sim q} \\left[ f(x) \\frac{p(x)}{q(x)} \\right]\\]\nIn RL: \\(\\rho_{t} = \\frac{\\pi(a_{t}|s_{t})}{\\mu(a_{t}|s_{t})}\\)\nVariance 폭발 문제 \\(\\rightarrow\\) Weighted IS로 해결 \\[\\frac{1}{\\sum_{i=1}^{N} \\rho_{i}}\\sum_{i=1}^{N} \\rho_{i} G_{i}\\]\n약간의 Bias 도입, Variance 대폭 감소.\n\n\n\\[G_{t}^{\\pi/\\mu} = \\rho_{t}^{T} G_{t} = \\prod_{k=t}^{T-1} \\frac{\\pi(a_k|s_k)}{\\mu(a_k|s_k)} G_{t}\\]\n\nProduct 계산이 되므로 step이 커질수록 variance가 커질 수 있다. 이를 보완하기 위해 Weighted IS를 사용한다.\n\n\n\n\n\\[\\rho_{t} = \\frac{\\pi(a_{t}|s_{t})}{\\mu(a_{t}|s_{t})}\\]\n\nTD는 한 스텝만 사용하므로 IS도 한 번만 적용한다. 따라서 MC보다 variance가 훨씬 작다.\n\n\n\n\n\n\n\n\\[Q(S_{t}, A_{t}) \\gets Q(S_{t}, A_{t}) + \\alpha [R_{t+1} + \\gamma \\mathbb{E}_{a} [Q(S_{t+1}, a)] - Q(S_{t}, A_{t})]\\]\n\n\\(Q\\)에 대한 expected value를 사용하여 TD target 계산 → Variance 감소\n\n\n\n\nMaximization Operation의 Overestimation 문제 해결을 위해 행동 선택과 가치 평가를 분리한다.\nWith 0.5 probability, update either \\(Q_1\\) or \\(Q_2\\):\n\n\\(Q_{1}(S,A) \\gets Q_{1}(S,A) + \\alpha \\left[R + \\gamma Q_{2}(S', \\arg\\max\\limits_{a} Q_{1}(S', a)) - Q_{1}(S,A)\\right]\\)\n\\(Q_{2}(S,A) \\gets Q_{2}(S,A) + \\alpha \\left[R + \\gamma Q_{1}(S', \\arg\\max\\limits_{a} Q_{2}(S', a)) - Q_{2}(S,A)\\right]\\)\n\n\n\n\n\\(G_{t}^{(1)} = R_{t+1} + \\gamma V(S_{t+1})\\) : One-step TD target\n\\(G_{t}^{(2)} = R_{t+1} + \\gamma R_{t+2} + \\gamma^{2} V(S_{t+2})\\)\n\\(\\vdots\\)\n\\(G_{t}^{(n)} = R_{t+1} + \\gamma R_{t+2} + \\cdots + \\gamma^{n-1} R_{t+n} + \\gamma^{n} V(S_{t+n})\\)\n\\(G_{t}^{\\infty} = R_{t+1} + \\gamma R_{t+2} + \\cdots\\) : Monte Carlo target\n\n\\(\\lambda\\)-return: \\(G_{t}^{\\lambda} = (1-\\lambda) \\sum_{n=1}^{\\infty} \\lambda^{n-1} G_{t}^{(n)}\\)\n\\(\\lambda \\in [0, 1]\\)이다.\n\nTD(\\(\\lambda\\)): \\(V(S_{t}) \\gets V(S_{t}) + \\alpha [G_{t}^{\\lambda} - V(S_{t})]\\)\n\n\\(\\gamma\\): 얼마나 먼 미래의 reward도 중요하게 생각할 것인가\n\\(\\lambda\\): 얼마나 return을 믿고(1), 얼마나 TD target을 믿을 것인가(0)"
+  },
+  {
+    "objectID": "posts/TD & DQN/index.html#temporal-difference-learning",
+    "href": "posts/TD & DQN/index.html#temporal-difference-learning",
+    "title": "TD & DQN",
+    "section": "",
+    "text": "GPI: Generalized Policy Iteration\n\\[PE \\rightarrow PI \\rightarrow PE \\rightarrow PI \\rightarrow \\cdots\\]\n\n강화 학습의 학습 루프는 Policy Evaluation과 Policy Improvement의 반복이다.\n\nPolicy Evaluation 방법에는 Monte Carlo(MC)와 Temporal Difference(TD)가 있다.\n\n\n\n\n\n\n\n\nModel\nBackup\nAlgorithm\n\n\n\n\nMonte Carlo\nFull Backup\n\\(V(S_{t}) \\gets V(S_{t}) + \\alpha [G_{t} - V(s_{t})]\\)\n\n\nTemporal Difference\nOne-Step Backup\n\\(V(S_{t}) \\gets V(S_{t}) + \\alpha [R_{t+1} + \\gamma V(s_{t+1}) - V(s_{t})]\\)\n\n\n\n\nTD target: \\(R_{t+1} + \\gamma V(s_{t+1})\\)\nTD error: \\(\\delta_{t} = \\text{TD target} - V(s_{t}) = R_{t+1} + \\gamma V(s_{t+1}) - V(s_{t})\\)\nSampling + Bootstrapping\n\nOn-policy TD prediction: SARSA \\[Q(S_{t}, A_{t}) \\gets Q(S_{t}, A_{t}) + \\alpha [R_{t+1} + \\gamma Q(S_{t+1}, A_{t+1}) - Q(S_{t}, A_{t})]\\]\n\n안전한 경로\n\nOff-policy TD prediction: Q-learning \\[Q(S_{t}, A_{t}) \\gets Q(S_{t}, A_{t}) + \\alpha [R_{t+1} + \\gamma \\max_{a} Q(S_{t+1}, a) - Q(S_{t}, A_{t})]\\]\n\nOptimistic한 경로\n\n\n\n\nOn-policy: Target policy \\(\\pi\\) = Behavior policy \\(\\mu\\)\nOff-policy: Target policy \\(\\pi\\) \\(\\neq\\) Behavior policy \\(\\mu\\)\n\n\n\n\n\\[\\mathbb{E}_{x\\sim p}[f(x)] = \\int f(x) p(x) dx = \\int f(x) \\frac{p(x)}{q(x)} q(x) dx = \\mathbb{E}_{x\\sim q} \\left[ f(x) \\frac{p(x)}{q(x)} \\right]\\]\nIn RL: \\(\\rho_{t} = \\frac{\\pi(a_{t}|s_{t})}{\\mu(a_{t}|s_{t})}\\)\nVariance 폭발 문제 \\(\\rightarrow\\) Weighted IS로 해결 \\[\\frac{1}{\\sum_{i=1}^{N} \\rho_{i}}\\sum_{i=1}^{N} \\rho_{i} G_{i}\\]\n약간의 Bias 도입, Variance 대폭 감소.\n\n\n\\[G_{t}^{\\pi/\\mu} = \\rho_{t}^{T} G_{t} = \\prod_{k=t}^{T-1} \\frac{\\pi(a_k|s_k)}{\\mu(a_k|s_k)} G_{t}\\]\n\nProduct 계산이 되므로 step이 커질수록 variance가 커질 수 있다. 이를 보완하기 위해 Weighted IS를 사용한다.\n\n\n\n\n\\[\\rho_{t} = \\frac{\\pi(a_{t}|s_{t})}{\\mu(a_{t}|s_{t})}\\]\n\nTD는 한 스텝만 사용하므로 IS도 한 번만 적용한다. 따라서 MC보다 variance가 훨씬 작다.\n\n\n\n\n\n\n\n\\[Q(S_{t}, A_{t}) \\gets Q(S_{t}, A_{t}) + \\alpha [R_{t+1} + \\gamma \\mathbb{E}_{a} [Q(S_{t+1}, a)] - Q(S_{t}, A_{t})]\\]\n\n\\(Q\\)에 대한 expected value를 사용하여 TD target 계산 → Variance 감소\n\n\n\n\nMaximization Operation의 Overestimation 문제 해결을 위해 행동 선택과 가치 평가를 분리한다.\nWith 0.5 probability, update either \\(Q_1\\) or \\(Q_2\\):\n\n\\(Q_{1}(S,A) \\gets Q_{1}(S,A) + \\alpha \\left[R + \\gamma Q_{2}(S', \\arg\\max\\limits_{a} Q_{1}(S', a)) - Q_{1}(S,A)\\right]\\)\n\\(Q_{2}(S,A) \\gets Q_{2}(S,A) + \\alpha \\left[R + \\gamma Q_{1}(S', \\arg\\max\\limits_{a} Q_{2}(S', a)) - Q_{2}(S,A)\\right]\\)\n\n\n\n\n\\(G_{t}^{(1)} = R_{t+1} + \\gamma V(S_{t+1})\\) : One-step TD target\n\\(G_{t}^{(2)} = R_{t+1} + \\gamma R_{t+2} + \\gamma^{2} V(S_{t+2})\\)\n\\(\\vdots\\)\n\\(G_{t}^{(n)} = R_{t+1} + \\gamma R_{t+2} + \\cdots + \\gamma^{n-1} R_{t+n} + \\gamma^{n} V(S_{t+n})\\)\n\\(G_{t}^{\\infty} = R_{t+1} + \\gamma R_{t+2} + \\cdots\\) : Monte Carlo target\n\n\\(\\lambda\\)-return: \\(G_{t}^{\\lambda} = (1-\\lambda) \\sum_{n=1}^{\\infty} \\lambda^{n-1} G_{t}^{(n)}\\)\n\\(\\lambda \\in [0, 1]\\)이다.\n\nTD(\\(\\lambda\\)): \\(V(S_{t}) \\gets V(S_{t}) + \\alpha [G_{t}^{\\lambda} - V(S_{t})]\\)\n\n\\(\\gamma\\): 얼마나 먼 미래의 reward도 중요하게 생각할 것인가\n\\(\\lambda\\): 얼마나 return을 믿고(1), 얼마나 TD target을 믿을 것인가(0)"
+  },
+  {
+    "objectID": "posts/TD & DQN/index.html#deep-q-networks",
+    "href": "posts/TD & DQN/index.html#deep-q-networks",
+    "title": "TD & DQN",
+    "section": "2. Deep Q-Networks",
+    "text": "2. Deep Q-Networks\n\nRL의 경우 Bellman equation을 이용해 Tabular update를 한다.\n\nMC, SARSA, Q-learning\n\nDRL의 경우 function approximation을 이용해 update한다.\n\nValue function \\(Q(s,a)\\): DQN\nPolicy \\(\\pi(a|s)\\): Policy Gradient, REINFORCE\nValue function + Policy: Actor-Critic\n\n\n\nLaw of Effect\n\n행동의 결과가 좋으면 그 행동을 더 자주 하게 된다.\n행동의 결과가 나쁘면 그 행동을 덜 하게 된다.\n\n\n\nDeep Q-Networks (DQN)\nCNN을 사용한 Q-learning 모델.\nLarge or Continuous State Space \\(\\rightarrow\\) Discrete Action Space\n\nNaive DQN\n\\[L(\\theta) = \\left[r_{t+1} + \\gamma \\max\\limits_{a} Q(s_{t+1}, a; \\theta) - Q(s_t, a_t; \\theta)\\right]^2\\]\nQ-learning의 TD target을 이용하여 DNN을 학습한다.\n\n문제점\n\nTemporal Correlation: SGD는 독립 샘플을 가정하지만, RL 데이터는 서로 강한 상관 관계가 있어 학습이 불안정하다.\nNon-stationary Target: Target과 Behavior가 같은 네트워크로 계산되므로, Target이 계속 변화하여 학습이 불안정하다.\n\n\n\n해결책\n\nExperience Replay: Buffer에 넣고 무작위로 샘플링, 거의 i.i.d.\nTarget Network: Behavior Network만 업데이트하고, 일정 주기로 Target Network의 가중치를 Behavior Network에서 복사하여 Target이 천천히 변화하도록 한다. \\[L(\\theta) = \\frac{1}{B}\\sum_{|i|=B}\\left[r_{i+1} + \\gamma \\max\\limits_{a} \\hat{Q}(s_{i+1}, a; \\hat{\\theta}) - Q(s_i, a_i; \\theta)\\right]^2\\]\nReward Clipping: 게임마다 다른 reward scale을 \\(\\begin{cases}1&r&gt;0\\\\-1&r&lt;0\\end{cases}\\) 로 제한하여 학습 안정성 향상\n\n\n\n\nCNN in DQN\n4 frame의 이미지를 state로 넣으면 입력 차원이 너무 커지므로, CNN을 이용해 256차원으로 압축한다.\n작은 데이터도 중요하기 때문에 Max pooling은 사용하지 않는다.\n\n\nMulti-step Learning\nn-step return을 사용할 수도 있다.\n\\[r_{t+1}^{n} = \\sum_{k=0}^{n-1} \\gamma^{k}r_{t+k+1}\\]\nDQN의 loss를 n-step return으로 변경한다.\n\\[L(\\theta) = \\left[r_{t+1}^{n} + \\gamma \\max\\limits_a\\hat{Q}\\left(S_{t+n},a;\\hat{\\theta}\\right) - Q(S_{t}, a_{t};\\theta)\\right]^2\\]\n\n\n\nDouble DQN\nDQN은 자기가 고른 행동을 자기가 평가해 overestimate를 한다.\n이 문제를 해결하기 위해 Behavior Network와 Target Network를 분리한다. 또한 Double Q-learning 방식을 차용한다.\n\\[L(\\theta) = \\left[r_{t+1} + \\gamma\\hat{Q}\\left(S_{t+1},\\arg\\max Q(S_{t+1},a;\\theta);\\hat{\\theta}\\right) - Q(S_{t}, a_{t};\\theta)\\right]^2\\]\n선택은 Behavior Network가, 평가는 Target Network가 한다.\n이 때 Target Network는 DQN과 마찬가지로 Behavior Network에서 복사한 것이다.\n\nPrioritized Replay\nDQN의 Experience Replay: 경험을 균등하게 뽑는다.\n\\[P(i)=\\frac{1}{N}\\]\nTD error가 큰 데이터는 현재 네트워크가 많이 틀렸다는 뜻이므로 더 자주 뽑게 한다.\n\\[P(i) = \\frac{p_{i}^{\\alpha}}{\\sum_{k} p_{i}^{k}}\\ \\text{where}\\ p_{i} = |r_{i+1} + \\gamma \\max\\limits_a\\hat{Q}(s_{i+1},a;\\hat{\\theta}) - Q(s_{i}, a_{i}; \\theta)| + \\epsilon\\]\n많이 틀린 문제를 더 자주 보기 때문에 sampling 분포가 바뀐다. 따라서 이 bias를 보정하기 위해 Importance Sampling Weights를 사용한다.\n\n\\(w_{i} = \\left(\\frac{1}{N}\\cdot\\frac{1}{P(i)}\\right)^{\\beta}\\)\n\n\\(\\beta=1\\): 완전한 importance sampling\n\\(\\beta=0\\): 보정 없음\n\n\nQ-learning Update에서는 TD error \\(\\delta_{i}\\) 대신 \\(w_{i}\\delta{i}\\)를 사용했다.\n이 때 \\(w_{i}\\)가 커져서 gradient가 폭발할 수 있기 때문에 보정항 \\(\\frac{1}{\\max_{k}w_{k}}\\)를 곱한다. 이로 인해 \\(w_{i}\\in[0,1]\\)이 된다.\n\n\n\nDueling DQN\nCNN encoder를 공유하는 2개의 stream으로 나눈다.\n\\(Q=V+A\\)를 만족하는 해는 무수히 많다(Identifiability Issue).\nAdvantage의 평균을 \\(0\\)으로 강제해 해를 유일하게 정하도록 한다.\n\\[Q(s,a) = V(s) + \\left(A(s,a) - \\frac{1}{|A|}\\sum_{a'}A(s',a)\\right)\\]"
   }
 ]
