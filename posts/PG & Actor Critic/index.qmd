@@ -1,0 +1,78 @@
+---
+title: PG & Actor Critic
+author: Selian
+date: 2026-06-08
+categories: [RL]
+image: image.jpg
+description: Policy Gradient Actor Critic
+---
+
+## 1. Policy Gradient
+
+DQN은 $\arg\max\limits_{a}Q(s,a)$로 action을 선택해야 한다. 따라서 action space가 연속이면 action을 찾기가 어렵다.\
+DQN은 TD error를 줄이는 방향으로 학습하는 반면, Policy Gradient는 $J_{\theta}=\mathbb{E}[G]$를 최대화하는 방향으로 학습한다.
+
+- Objective Function
+
+$$J(\theta) = \mathbb{E}_{\pi_{\theta}}[r(\tau)] = \int p(\tau;\theta)r(\tau)d\tau\quad\text{where}\ p(\tau;\theta) = \pi_{\theta}(\tau)$$
+
+- Policy Gradient Update
+
+$$\theta := \theta + \alpha \nabla_{\theta}J(\theta)$$
+
+이 때 $\nabla_{\theta}J(\theta)$는 다음과 같은 방법으로 구한다.
+
+$$\nabla_{\theta}J(\theta) = \nabla_{\theta}\mathbb{E}_{\pi_{\theta}}[r(\tau)] = \mathbb{E}_{\pi_{\theta}}\left[r(\tau) \sum_{t=0}^{T-1}\nabla_{\theta}\log\pi_{\theta}(a_{t}|s_{t})\right]$$
+
+Proof.
+
+$$\begin{aligned}
+\nabla_{\theta}\mathbb{E}_{\pi_{\theta}}[r(\tau)] &= \nabla_{\theta}\int\pi(\tau)r(\tau)d\tau = \int\nabla_{\theta}\pi_{\theta}(\tau)r(\tau)d\tau = \int\pi_{\theta}(\tau)\cdot\frac{\nabla_{\theta}\pi_{\theta}(\tau)}{\pi_{\theta}(\tau)}\cdot r(\tau)d\tau\\
+&= \int\pi_{\theta}(\tau)r(\tau)\nabla_{\theta}\log\pi_{\theta}(\tau)d\tau = \mathbb{E}_{\pi_{\theta}}\left[r(\tau)\nabla_{\theta}\log\pi_{\theta}(\tau)\right]\\
+\\
+\nabla_{\theta}\log\pi_{\theta}(\tau) &= \nabla_{\theta}\log\left(p(s_{0})\prod_{t=0}^{T-1}\pi_{\theta}(a_{t}|s_{t})p(s_{t+1}|s_{t},a_{t})\right) = \sum_{t=0}^{T-1}\nabla_{\theta}\log\pi_{\theta}(a_{t}|s_{t})
+\end{aligned}$$
+
+보상이 큰 trajectory에 등장한 행동들의 확률을 높이자는 아이디어.\
+$\mathbb{E}$를 계산하기 위해선 모든 $\tau$를 알아야 하지만, 그것은 불가능하기 때문에 Markov Chain Monte Carlo (MCMC)로 추정한다.
+
+$$\mathbb{E}[X]\to\frac{1}{N}\sum_{i}X_{i}$$
+
+### REINFORCE
+
+Monte Carlo Policy Gradient 방식.
+
+- M개의 trajectory $\tau$가 있을 때
+- Objective function $J$를 추정한다.
+$$g_{\theta} := \frac{1}{M}\sum_{i=1}^{M}\left(\sum_{t=0}^{T-1} G_{t}^{(i)}\nabla_{\theta}\log\pi_{\theta}\left(a_{t}^{(i)}|s_{t}^{(i)}\right)\right)\approx\nabla_{\theta}J(\theta)$$
+- 그 후 Policy를 업데이트한다.
+$$\theta := \theta + \alpha g_{\theta} \approx \theta + \alpha\nabla_{\theta}J(\theta)$$
+
+문제점\
+$G_{t}$는 상태마다 scale이 다르다. 원래 좋은 state라면 $G_{t}$도 높게 나온다 (high variance).\
+따라서 Baseline $b(s_{t})$을 빼줘 평균 대비 얼마나 잘 했는지를 본다 (variance 감소).
+
+$$\nabla_{\theta}J(\theta) = \nabla_{\theta}\mathbb{E}_{\pi_{\theta}}[r(\tau)] = \mathbb{E}_{\pi_{\theta}}\left[\sum_{t=0}^{T-1}\left(G_{t}-b(s_{t})\right)\nabla_{\theta}\log\pi_{\theta}(a_{t}|s_{t})\right]$$
+
+이는 $\mathbb{E}_{\pi_{\theta}}\left[\sum_{t=0}^{T-1}b(s_{t})\nabla_{\theta}\log\pi_{\theta}(a_{t}|s_{t})\right]$를 빼준 것과 같다. $\sum_{a}\pi(a|s)=1$ 이므로 $0$을 뺀 것과 같아 기대값이 동일하다 (unbiased).
+
+Good baseline은 $V(s)$이다. 이 경우 $G_{t}-V(s)$는 $A(s,a)$와 동일해진다.
+
+## 2. Actor-Critic Method
+
+Critic: value function, $V(s;\phi)$ or $Q(s,a;\phi)$\
+Actor: policy $\pi_{\theta}(a|s)$ using PG $\nabla_{\theta}J(\theta)$
+
+REINFORCE는 느리고, high variance에다가 online learning이 어렵다.\
+따라서 $G_t$를 TD Target으로 근사해 문제를 해결한다.
+
+$G_{t} - V(S_{t})$ 대신 $r_{t+1}+\gamma V(s_{t+1})-V(s_{t})$ (TD error $\delta_{t}$와 동일)을 사용한다.
+
+$$\nabla_{\theta}J(\theta) = \mathbb{E}_{\pi_{\theta}}\left[\underbrace{\left(r+\gamma V_{\phi}(s)-V_{\phi}(s)\right)}_{\text{Critic}}\underbrace{\nabla_{\theta}\log\pi_{\theta}(a|s)}_{\text{Actor}}\right]$$
+
+Critic
+$$\phi:=\phi+\beta(\text{target}-V_{\phi}(s_{t}))\nabla_{\phi}V_{\phi}(s_{t})$$
+$$\text{target}=\begin{cases}G_{t}&\to\delta = G_{t}-V(s_{t};\phi)\\r+\gamma V_{\phi}(s')&\to\delta=r+\gamma V(s_{t+1};\phi)-V(s_{t};\phi)\end{cases}$$
+
+Actor
+$$\theta := \theta + \alpha\nabla_{\theta}\mathbb{E}[r(\tau);\theta]$$$$r(\tau)=\begin{cases}G_{t}-V_{\phi}(s_{t})\\r+\gamma V_{\phi}(s_{t+1})-V_{\phi}(s_{t})\end{cases}$$
