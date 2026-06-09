@@ -6,8 +6,11 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Selian">
+<meta name="dcterms.date" content="2026-06-08">
+<meta name="description" content="Policy Gradient Actor Critic">
 
-<title>SelianBlog</title>
+<title>PG &amp; Actor Critic – SelianBlog</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -26,32 +29,30 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<link href="./favicon.ico" rel="icon">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-3a307c3d481e20695a1fb528b2a75670.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-3a307c3d481e20695a1fb528b2a75670.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-3a307c3d481e20695a1fb528b2a75670.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-8fb1a5d980b1319fc1a65c07e487884b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-8fb1a5d980b1319fc1a65c07e487884b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-8fb1a5d980b1319fc1a65c07e487884b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
-<script src="site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.js"></script>
-<link href="site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.css" rel="stylesheet">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../favicon.ico" rel="icon">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-3a307c3d481e20695a1fb528b2a75670.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-3a307c3d481e20695a1fb528b2a75670.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-3a307c3d481e20695a1fb528b2a75670.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-8fb1a5d980b1319fc1a65c07e487884b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-8fb1a5d980b1319fc1a65c07e487884b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-8fb1a5d980b1319fc1a65c07e487884b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.js"></script>
+<link href="../../site_libs/quarto-contrib/pseudocode-2.4.1/pseudocode.min.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -79,63 +80,6 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-recent-posts .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-image','listing-title','listing-date',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-title","listing-author","listing-date","listing-image","listing-description"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-recent-posts'] = new List('listing-recent-posts', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-recent-reviews .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-image','listing-title','listing-date',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: [],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-recent-reviews'] = new List('listing-recent-reviews', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
 <script>
 MathJax = {
   tex: {
@@ -192,9 +136,9 @@ window.Quarto = {
 };
 </script>
 
-<link rel="stylesheet" href="styles.css">
-<meta property="og:title" content="SelianBlog">
-<meta property="og:description" content="A blog built with Quarto">
+<link rel="stylesheet" href="../../styles.css">
+<meta property="og:title" content="PG &amp; Actor Critic – SelianBlog">
+<meta property="og:description" content="Policy Gradient Actor Critic">
 <meta property="og:image" content="https://selianu.github.io/SelianBlog/posts/PG &amp; Actor Critic/image.jpg">
 <meta property="og:site_name" content="SelianBlog">
 </head>
@@ -206,7 +150,7 @@ window.Quarto = {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">SelianBlog</span>
     </a>
   </div>
@@ -217,17 +161,17 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./posts.html"> 
+    <a class="nav-link" href="../../posts.html"> 
 <span class="menu-text">Posts</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./reviews.html"> 
+    <a class="nav-link" href="../../reviews.html"> 
 <span class="menu-text">Reviews</span></a>
   </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./about.html"> 
+    <a class="nav-link" href="../../about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item compact">
@@ -243,7 +187,7 @@ window.Quarto = {
     </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
@@ -251,24 +195,47 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#recent-posts" id="toc-recent-posts" class="nav-link active" data-scroll-target="#recent-posts">Recent Posts</a></li>
-  <li><a href="#recent-reviews" id="toc-recent-reviews" class="nav-link" data-scroll-target="#recent-reviews">Recent Reviews</a></li>
+  <li><a href="#policy-gradient" id="toc-policy-gradient" class="nav-link active" data-scroll-target="#policy-gradient">1. Policy Gradient</a>
+  <ul class="collapse">
+  <li><a href="#reinforce" id="toc-reinforce" class="nav-link" data-scroll-target="#reinforce">REINFORCE</a></li>
+  </ul></li>
+  <li><a href="#actor-critic-method" id="toc-actor-critic-method" class="nav-link" data-scroll-target="#actor-critic-method">2. Actor-Critic Method</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content column-page-left" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">SelianBlog</h1>
+<h1 class="title">PG &amp; Actor Critic</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">RL</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Policy Gradient Actor Critic
+  </div>
 </div>
 
 
+<div class="quarto-title-meta">
 
-<div class="quarto-title-meta column-page-left">
-
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Selian </p>
+          </div>
+  </div>
     
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">June 8, 2026</p>
+    </div>
+  </div>
   
     
   </div>
@@ -278,78 +245,56 @@ window.Quarto = {
 </header>
 
 
-<p>연구와 논문 리뷰를 기록하는 블로그입니다.</p>
-<section id="recent-posts" class="level2">
-<h2 class="anchored" data-anchor-id="recent-posts">Recent Posts</h2>
-<div id="listing-recent-posts" class="quarto-listing quarto-listing-container-grid">
-<div class="list grid quarto-listing-cols-3">
-<div class="g-col-1" data-index="0" data-categories="Ukw=" data-listing-date-sort="1780876800000" data-listing-file-modified-sort="1780984310214" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="2" data-listing-word-count-sort="212">
-<a href="./posts/PG &amp; Actor Critic/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="./posts/PG &amp; Actor Critic/image.jpg" class="thumbnail-image card-img" style="height: 150px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-PG &amp; Actor Critic
-</h5>
-<div class="card-attribution card-text-small end">
-<div class="listing-date">
-Jun 8, 2026
-</div>
-</div>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="1" data-categories="Ukw=" data-listing-date-sort="1780704000000" data-listing-file-modified-sort="1780984310214" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="771">
-<a href="./posts/TD &amp; DQN/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="./posts/TD &amp; DQN/image.jpg" class="thumbnail-image card-img" style="height: 150px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-TD &amp; DQN
-</h5>
-<div class="card-attribution card-text-small end">
-<div class="listing-date">
-Jun 6, 2026
-</div>
-</div>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="2" data-categories="Ukw=" data-listing-date-sort="1776124800000" data-listing-file-modified-sort="1780984310214" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="987">
-<a href="./posts/MDP &amp; Bellman Equation/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="./posts/MDP &amp; Bellman Equation/RL.png" class="thumbnail-image card-img" style="height: 150px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-MDP &amp; Bellman Equation
-</h5>
-<div class="card-attribution card-text-small end">
-<div class="listing-date">
-Apr 14, 2026
-</div>
-</div>
-</div>
-</div></a>
-</div>
-</div>
-<div class="listing-no-matching d-none">No matching items</div>
-</div>
+<section id="policy-gradient" class="level2">
+<h2 class="anchored" data-anchor-id="policy-gradient">1. Policy Gradient</h2>
+<p>DQN은 <span class="math inline">\(\arg\max\limits_{a}Q(s,a)\)</span>로 action을 선택해야 한다. 따라서 action space가 연속이면 action을 찾기가 어렵다.<br>
+DQN은 TD error를 줄이는 방향으로 학습하는 반면, Policy Gradient는 <span class="math inline">\(J_{\theta}=\mathbb{E}[G]\)</span>를 최대화하는 방향으로 학습한다.</p>
+<ul>
+<li>Objective Function</li>
+</ul>
+<p><span class="math display">\[J(\theta) = \mathbb{E}_{\pi_{\theta}}[r(\tau)] = \int p(\tau;\theta)r(\tau)d\tau\quad\text{where}\ p(\tau;\theta) = \pi_{\theta}(\tau)\]</span></p>
+<ul>
+<li>Policy Gradient Update</li>
+</ul>
+<p><span class="math display">\[\theta := \theta + \alpha \nabla_{\theta}J(\theta)\]</span></p>
+<p>이 때 <span class="math inline">\(\nabla_{\theta}J(\theta)\)</span>는 다음과 같은 방법으로 구한다.</p>
+<p><span class="math display">\[\nabla_{\theta}J(\theta) = \nabla_{\theta}\mathbb{E}_{\pi_{\theta}}[r(\tau)] = \mathbb{E}_{\pi_{\theta}}\left[r(\tau) \sum_{t=0}^{T-1}\nabla_{\theta}\log\pi_{\theta}(a_{t}|s_{t})\right]\]</span></p>
+<p>Proof.</p>
+<p><span class="math display">\[\begin{aligned}
+\nabla_{\theta}\mathbb{E}_{\pi_{\theta}}[r(\tau)] &amp;= \nabla_{\theta}\int\pi(\tau)r(\tau)d\tau = \int\nabla_{\theta}\pi_{\theta}(\tau)r(\tau)d\tau = \int\pi_{\theta}(\tau)\cdot\frac{\nabla_{\theta}\pi_{\theta}(\tau)}{\pi_{\theta}(\tau)}\cdot r(\tau)d\tau\\
+&amp;= \int\pi_{\theta}(\tau)r(\tau)\nabla_{\theta}\log\pi_{\theta}(\tau)d\tau = \mathbb{E}_{\pi_{\theta}}\left[r(\tau)\nabla_{\theta}\log\pi_{\theta}(\tau)\right]\\
+\\
+\nabla_{\theta}\log\pi_{\theta}(\tau) &amp;= \nabla_{\theta}\log\left(p(s_{0})\prod_{t=0}^{T-1}\pi_{\theta}(a_{t}|s_{t})p(s_{t+1}|s_{t},a_{t})\right) = \sum_{t=0}^{T-1}\nabla_{\theta}\log\pi_{\theta}(a_{t}|s_{t})
+\end{aligned}\]</span></p>
+<p>보상이 큰 trajectory에 등장한 행동들의 확률을 높이자는 아이디어.<br>
+<span class="math inline">\(\mathbb{E}\)</span>를 계산하기 위해선 모든 <span class="math inline">\(\tau\)</span>를 알아야 하지만, 그것은 불가능하기 때문에 Markov Chain Monte Carlo (MCMC)로 추정한다.</p>
+<p><span class="math display">\[\mathbb{E}[X]\to\frac{1}{N}\sum_{i}X_{i}\]</span></p>
+<section id="reinforce" class="level3">
+<h3 class="anchored" data-anchor-id="reinforce">REINFORCE</h3>
+<p>Monte Carlo Policy Gradient 방식.</p>
+<ul>
+<li>M개의 trajectory <span class="math inline">\(\tau\)</span>가 있을 때</li>
+<li>Objective function <span class="math inline">\(J\)</span>를 추정한다. <span class="math display">\[g_{\theta} := \frac{1}{M}\sum_{i=1}^{M}\left(\sum_{t=0}^{T-1} G_{t}^{(i)}\nabla_{\theta}\log\pi_{\theta}\left(a_{t}^{(i)}|s_{t}^{(i)}\right)\right)\approx\nabla_{\theta}J(\theta)\]</span></li>
+<li>그 후 Policy를 업데이트한다. <span class="math display">\[\theta := \theta + \alpha g_{\theta} \approx \theta + \alpha\nabla_{\theta}J(\theta)\]</span></li>
+</ul>
+<p>문제점<br>
+<span class="math inline">\(G_{t}\)</span>는 상태마다 scale이 다르다. 원래 좋은 state라면 <span class="math inline">\(G_{t}\)</span>도 높게 나온다 (high variance).<br>
+따라서 Baseline <span class="math inline">\(b(s_{t})\)</span>을 빼줘 평균 대비 얼마나 잘 했는지를 본다 (variance 감소).</p>
+<p><span class="math display">\[\nabla_{\theta}J(\theta) = \nabla_{\theta}\mathbb{E}_{\pi_{\theta}}[r(\tau)] = \mathbb{E}_{\pi_{\theta}}\left[\sum_{t=0}^{T-1}\left(G_{t}-b(s_{t})\right)\nabla_{\theta}\log\pi_{\theta}(a_{t}|s_{t})\right]\]</span></p>
+<p>이는 <span class="math inline">\(\mathbb{E}_{\pi_{\theta}}\left[\sum_{t=0}^{T-1}b(s_{t})\nabla_{\theta}\log\pi_{\theta}(a_{t}|s_{t})\right]\)</span>를 빼준 것과 같다. <span class="math inline">\(\sum_{a}\pi(a|s)=1\)</span> 이므로 <span class="math inline">\(0\)</span>을 뺀 것과 같아 기대값이 동일하다 (unbiased).</p>
+<p>Good baseline은 <span class="math inline">\(V(s)\)</span>이다. 이 경우 <span class="math inline">\(G_{t}-V(s)\)</span>는 <span class="math inline">\(A(s,a)\)</span>와 동일해진다.</p>
 </section>
-<section id="recent-reviews" class="level2">
-<h2 class="anchored" data-anchor-id="recent-reviews">Recent Reviews</h2>
-<div id="listing-recent-reviews" class="quarto-listing quarto-listing-container-grid">
-<div class="list grid quarto-listing-cols-3">
-
-</div>
-<div class="listing-no-matching d-none">No matching items</div>
-</div>
-
+</section>
+<section id="actor-critic-method" class="level2">
+<h2 class="anchored" data-anchor-id="actor-critic-method">2. Actor-Critic Method</h2>
+<p>Critic: value function, <span class="math inline">\(V(s;\phi)\)</span> or <span class="math inline">\(Q(s,a;\phi)\)</span><br>
+Actor: policy <span class="math inline">\(\pi_{\theta}(a|s)\)</span> using PG <span class="math inline">\(\nabla_{\theta}J(\theta)\)</span></p>
+<p>REINFORCE는 느리고, high variance에다가 online learning이 어렵다.<br>
+따라서 <span class="math inline">\(G_t\)</span>를 TD Target으로 근사해 문제를 해결한다.</p>
+<p><span class="math inline">\(G_{t} - V(S_{t})\)</span> 대신 <span class="math inline">\(r_{t+1}+\gamma V(s_{t+1})-V(s_{t})\)</span> (TD error <span class="math inline">\(\delta_{t}\)</span>와 동일)을 사용한다.</p>
+<p><span class="math display">\[\nabla_{\theta}J(\theta) = \mathbb{E}_{\pi_{\theta}}\left[\underbrace{\left(r+\gamma V_{\phi}(s)-V_{\phi}(s)\right)}_{\text{Critic}}\underbrace{\nabla_{\theta}\log\pi_{\theta}(a|s)}_{\text{Actor}}\right]\]</span></p>
+<p>Critic <span class="math display">\[\phi:=\phi+\beta(\text{target}-V_{\phi}(s_{t}))\nabla_{\phi}V_{\phi}(s_{t})\]</span> <span class="math display">\[\text{target}=\begin{cases}G_{t}&amp;\to\delta = G_{t}-V(s_{t};\phi)\\r+\gamma V_{\phi}(s')&amp;\to\delta=r+\gamma V(s_{t+1};\phi)-V(s_{t};\phi)\end{cases}\]</span></p>
+<p>Actor <span class="math display">\[\theta := \theta + \alpha\nabla_{\theta}\mathbb{E}[r(\tau);\theta]\]</span><span class="math display">\[r(\tau)=\begin{cases}G_{t}-V_{\phi}(s_{t})\\r+\gamma V_{\phi}(s_{t+1})-V_{\phi}(s_{t})\end{cases}\]</span></p>
 
 
 </section>

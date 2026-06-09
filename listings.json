@@ -1,22 +1,24 @@
 [
   {
-    "listing": "/index.html",
-    "items": [
-      "/posts/TD & DQN/index.html",
-      "/posts/MDP & Bellman Equation/index.html",
-      "/posts/DP & RL/index.html"
-    ]
+    "listing": "/reviews.html",
+    "items": []
   },
   {
     "listing": "/posts.html",
     "items": [
+      "/posts/PG & Actor Critic/index.html",
       "/posts/TD & DQN/index.html",
       "/posts/MDP & Bellman Equation/index.html",
       "/posts/DP & RL/index.html"
     ]
   },
   {
-    "listing": "/reviews.html",
-    "items": []
+    "listing": "/index.html",
+    "items": [
+      "/posts/PG & Actor Critic/index.html",
+      "/posts/TD & DQN/index.html",
+      "/posts/MDP & Bellman Equation/index.html",
+      "/posts/DP & RL/index.html"
+    ]
   }
 ]

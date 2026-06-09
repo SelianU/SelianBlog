@@ -2,30 +2,34 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://selianu.github.io/SelianBlog/posts/DP &amp; RL/index.html</loc>
-    <lastmod>2026-06-07T16:36:03.393Z</lastmod>
-  </url>
-  <url>
-    <loc>https://selianu.github.io/SelianBlog/posts/MDP &amp; Bellman Equation/index.html</loc>
-    <lastmod>2026-06-07T16:36:03.394Z</lastmod>
-  </url>
-  <url>
-    <loc>https://selianu.github.io/SelianBlog/index.html</loc>
-    <lastmod>2026-06-07T16:36:03.392Z</lastmod>
-  </url>
-  <url>
-    <loc>https://selianu.github.io/SelianBlog/about.html</loc>
-    <lastmod>2026-06-07T16:36:03.392Z</lastmod>
-  </url>
-  <url>
-    <loc>https://selianu.github.io/SelianBlog/posts.html</loc>
-    <lastmod>2026-06-07T16:36:03.392Z</lastmod>
-  </url>
-  <url>
-    <loc>https://selianu.github.io/SelianBlog/reviews.html</loc>
-    <lastmod>2026-06-07T16:36:03.395Z</lastmod>
+    <lastmod>2026-06-09T05:51:50.213Z</lastmod>
   </url>
   <url>
     <loc>https://selianu.github.io/SelianBlog/posts/TD &amp; DQN/index.html</loc>
-    <lastmod>2026-06-07T16:36:03.394Z</lastmod>
+    <lastmod>2026-06-09T05:51:50.214Z</lastmod>
+  </url>
+  <url>
+    <loc>https://selianu.github.io/SelianBlog/reviews.html</loc>
+    <lastmod>2026-06-09T05:51:50.214Z</lastmod>
+  </url>
+  <url>
+    <loc>https://selianu.github.io/SelianBlog/posts.html</loc>
+    <lastmod>2026-06-09T05:51:50.212Z</lastmod>
+  </url>
+  <url>
+    <loc>https://selianu.github.io/SelianBlog/about.html</loc>
+    <lastmod>2026-06-09T05:51:50.212Z</lastmod>
+  </url>
+  <url>
+    <loc>https://selianu.github.io/SelianBlog/index.html</loc>
+    <lastmod>2026-06-09T05:51:50.212Z</lastmod>
+  </url>
+  <url>
+    <loc>https://selianu.github.io/SelianBlog/posts/MDP &amp; Bellman Equation/index.html</loc>
+    <lastmod>2026-06-09T05:51:50.214Z</lastmod>
+  </url>
+  <url>
+    <loc>https://selianu.github.io/SelianBlog/posts/PG &amp; Actor Critic/index.html</loc>
+    <lastmod>2026-06-09T05:51:50.214Z</lastmod>
   </url>
 </urlset>
